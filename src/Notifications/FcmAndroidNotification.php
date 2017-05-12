@@ -75,6 +75,78 @@ class FcmAndroidNotification extends FcmNotification
      */
     protected $titleLocArgs;
 
+    /**
+     * @param string $androidChannelId
+     */
+    public function setAndroidChannelId($androidChannelId)
+    {
+        $this->androidChannelId = $androidChannelId;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+    }
+
+    /**
+     * @param string $sound
+     */
+    public function setSound($sound)
+    {
+        $this->sound = $sound;
+    }
+
+    /**
+     * @param string $tag
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @param string $bodyLocKey
+     */
+    public function setBodyLocKey($bodyLocKey)
+    {
+        $this->bodyLocKey = $bodyLocKey;
+    }
+
+    /**
+     * @param array $bodyLocArgs
+     */
+    public function setBodyLocArgs($bodyLocArgs)
+    {
+        $this->bodyLocArgs = $bodyLocArgs;
+    }
+
+    /**
+     * @param string $titleLocKey
+     */
+    public function setTitleLocKey($titleLocKey)
+    {
+        $this->titleLocKey = $titleLocKey;
+    }
+
+    /**
+     * @param array $titleLocArgs
+     */
+    public function setTitleLocArgs($titleLocArgs)
+    {
+        $this->titleLocArgs = $titleLocArgs;
+    }
+
     public function toArray()
     {
         return [

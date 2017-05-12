@@ -3,29 +3,25 @@
 namespace NotificationChannels\Fcm;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 //use NotificationChannels\Fcm\Events\MessageWasSent;
 //use NotificationChannels\Fcm\Events\SendingMessage;
 
 class FcmChannel
 {
-    const DEFAULT_API_URL = 'https://fcm.googleapis.com/fcm/send';
+    const DEFAULT_API_URL = 'https://fcm.googleapis.com';
 
     /**
      * @var Client
      */
     protected $client;
 
-    public function __construct()
+    public function __construct(Client $client)
     {
-        $this->client = new Client([
-            'base_uri' => config('broadcasting.connections.fcm.url', FcmChannel::DEFAULT_API_URL),
-            'headers'  => [
-                'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
-                'Content-Type'  => 'application/json',
-            ],
-        ]);
+        $this->client = $client;
     }
 
     /**
@@ -38,10 +34,24 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        //$response = [a call to the api of your notification send]
+        $tokens = (array) $notifiable->routeNotificationForFcm();
+        if (! $tokens) {
+            return;
+        }
 
-//        if ($response->error) { // replace this by the code need to check for errors
-//            throw CouldNotSendNotification::serviceRespondedWithAnError($response);
-//        }
+        $message = $notification->toFcm($notifiable);
+        if (! $message) {
+            return;
+        }
+
+        $message->setRegistrationIds($tokens);
+
+        try {
+            $this->client->request('POST', '/fcm/send', [
+                'body' => $message->toJson(),
+            ]);
+        } catch (RequestException $requestException) {
+            throw CouldNotSendNotification::serviceRespondedWithAnError($requestException->getMessage());
+        }
     }
 }

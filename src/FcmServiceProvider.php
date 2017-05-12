@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Fcm;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
 class FcmServiceProvider extends ServiceProvider
@@ -11,30 +12,16 @@ class FcmServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Bootstrap code here.
-
-        /**
-         * Here's some example code we use for the pusher package.
-
-        $this->app->when(Channel::class)
-            ->needs(Pusher::class)
+        $this->app->when(FcmChannel::class)
+            ->needs(Client::class)
             ->give(function () {
-                $pusherConfig = config('broadcasting.connections.pusher');
-
-                return new Pusher(
-                    $pusherConfig['key'],
-                    $pusherConfig['secret'],
-                    $pusherConfig['app_id']
-                );
+                return new Client([
+                    'base_uri' => config('broadcasting.connections.fcm.url', FcmChannel::DEFAULT_API_URL),
+                    'headers'  => [
+                        'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
+                        'Content-Type'  => 'application/json',
+                    ],
+                ]);
             });
-         */
-
-    }
-
-    /**
-     * Register the application services.
-     */
-    public function register()
-    {
     }
 }

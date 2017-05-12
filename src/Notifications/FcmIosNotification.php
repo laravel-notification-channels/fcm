@@ -53,6 +53,54 @@ class FcmIosNotification extends FcmNotification
      */
     protected $titleLocArgs;
 
+    /**
+     * @param string $badge
+     */
+    public function setBadge($badge)
+    {
+        $this->badge = $badge;
+    }
+
+    /**
+     * @param string $sound
+     */
+    public function setSound($sound)
+    {
+        $this->sound = $sound;
+    }
+
+    /**
+     * @param string $bodyLocKey
+     */
+    public function setBodyLocKey($bodyLocKey)
+    {
+        $this->bodyLocKey = $bodyLocKey;
+    }
+
+    /**
+     * @param array $bodyLocArgs
+     */
+    public function setBodyLocArgs($bodyLocArgs)
+    {
+        $this->bodyLocArgs = $bodyLocArgs;
+    }
+
+    /**
+     * @param string $titleLocKey
+     */
+    public function setTitleLocKey($titleLocKey)
+    {
+        $this->titleLocKey = $titleLocKey;
+    }
+
+    /**
+     * @param array $titleLocArgs
+     */
+    public function setTitleLocArgs($titleLocArgs)
+    {
+        $this->titleLocArgs = $titleLocArgs;
+    }
+
     public function toArray()
     {
         return [

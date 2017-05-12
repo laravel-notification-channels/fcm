@@ -28,6 +28,30 @@ class FcmIosMessage extends FcmMessage
      */
     protected $notification;
 
+    /**
+     * @param bool $contentAvailable
+     */
+    public function setContentAvailable($contentAvailable)
+    {
+        $this->contentAvailable = $contentAvailable;
+    }
+
+    /**
+     * @param bool $mutableContent
+     */
+    public function setMutableContent($mutableContent)
+    {
+        $this->mutableContent = $mutableContent;
+    }
+
+    /**
+     * @param FcmIosNotification $notification
+     */
+    public function setNotification($notification)
+    {
+        $this->notification = $notification;
+    }
+
     public function toJson()
     {
         return json_encode($this->toArray());
@@ -36,6 +60,7 @@ class FcmIosMessage extends FcmMessage
     public function toArray()
     {
         return [
+            'registration_ids'  => $this->registrationIds,
             'condition'         => $this->condition,
             'content_available' => $this->contentAvailable,
             'mutable_content'   => $this->mutableContent,

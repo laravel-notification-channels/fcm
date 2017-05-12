@@ -10,4 +10,12 @@ class FcmWebNotification extends FcmNotification
      * The URL to use for the notification's icon.
      */
     protected $icon;
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+    }
 }

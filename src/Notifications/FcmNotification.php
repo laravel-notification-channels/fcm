@@ -35,4 +35,28 @@ class FcmNotification
      * For all URL values, secure HTTPS is required.
      */
     protected $clickAction;
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @param string $body
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @param string $clickAction
+     */
+    public function setClickAction($clickAction)
+    {
+        $this->clickAction = $clickAction;
+    }
 }

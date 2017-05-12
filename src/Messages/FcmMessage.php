@@ -5,6 +5,11 @@ namespace NotificationChannels\Fcm\Messages;
 class FcmMessage
 {
     /**
+     * @var array
+     */
+    protected $registrationIds;
+
+    /**
      * @var string Optional
      *
      * This parameter specifies a logical expression of conditions that determine the message target.
@@ -63,4 +68,60 @@ class FcmMessage
      * Values in string types are recommended. You have to convert values in objects or other non-string data types (e.g., integers or booleans) to string.
      */
     protected $data;
+
+    /**
+     * @param array $registrationIds
+     */
+    public function setRegistrationIds($registrationIds)
+    {
+        $this->registrationIds = $registrationIds;
+    }
+
+    /**
+     * @param string $condition
+     */
+    public function setCondition($condition)
+    {
+        $this->condition = $condition;
+    }
+
+    /**
+     * @param string $collapseKey
+     */
+    public function setCollapseKey($collapseKey)
+    {
+        $this->collapseKey = $collapseKey;
+    }
+
+    /**
+     * @param string $priority
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+    }
+
+    /**
+     * @param int $timeToLive
+     */
+    public function setTimeToLive($timeToLive)
+    {
+        $this->timeToLive = $timeToLive;
+    }
+
+    /**
+     * @param bool $dryRun
+     */
+    public function setDryRun($dryRun)
+    {
+        $this->dryRun = $dryRun;
+    }
+
+    /**
+     * @param object $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
 }
