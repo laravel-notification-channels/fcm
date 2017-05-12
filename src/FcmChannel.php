@@ -2,16 +2,30 @@
 
 namespace NotificationChannels\Fcm;
 
-use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
-use NotificationChannels\Fcm\Events\MessageWasSent;
-use NotificationChannels\Fcm\Events\SendingMessage;
+use GuzzleHttp\Client;
 use Illuminate\Notifications\Notification;
+
+//use NotificationChannels\Fcm\Events\MessageWasSent;
+//use NotificationChannels\Fcm\Events\SendingMessage;
 
 class FcmChannel
 {
+    const DEFAULT_API_URL = 'https://fcm.googleapis.com/fcm/send';
+
+    /**
+     * @var Client
+     */
+    protected $client;
+
     public function __construct()
     {
-        // Initialisation code here
+        $this->client = new Client([
+            'base_uri' => config('broadcasting.connections.fcm.url', FcmChannel::DEFAULT_API_URL),
+            'headers'  => [
+                'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
+                'Content-Type'  => 'application/json',
+            ],
+        ]);
     }
 
     /**
