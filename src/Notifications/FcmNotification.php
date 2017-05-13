@@ -5,23 +5,50 @@ namespace NotificationChannels\Fcm\Notifications;
 class FcmNotification
 {
     /**
-     * @var string Optional
-     *
-     * The notification's title.
-     * This field is not visible on iOS phones and tablets.
+     * @var string
      */
     protected $title;
 
     /**
-     * @var string Optional
-     *
-     * The notification's body text.
+     * @var string
      */
     protected $body;
 
     /**
-     * @var string Optional
+     * @var string
+     */
+    protected $clickAction;
+
+    /**
+     * [Optional] The notification's title.
      *
+     * This field is not visible on iOS phones and tablets.
+     *
+     * @param string $title
+     * @return FcmNotification $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * [Optional] The notification's body text.
+     *
+     * @param string $body
+     * @return $this
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * [Optional]
      * iOS:
      * The action associated with a user click on the notification.
      * Corresponds to category in the APNs payload.
@@ -33,30 +60,50 @@ class FcmNotification
      * Web:
      * The action associated with a user click on the notification.
      * For all URL values, secure HTTPS is required.
-     */
-    protected $clickAction;
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    /**
-     * @param string $body
-     */
-    public function setBody($body)
-    {
-        $this->body = $body;
-    }
-
-    /**
+     *
      * @param string $clickAction
+     * @return $this
      */
     public function setClickAction($clickAction)
     {
         $this->clickAction = $clickAction;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClickAction()
+    {
+        return $this->clickAction;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'title'        => $this->title,
+            'body'         => $this->body,
+            'click_action' => $this->clickAction,
+        ];
     }
 }

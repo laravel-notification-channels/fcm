@@ -2,18 +2,18 @@
 
 namespace NotificationChannels\Fcm\Messages;
 
-use NotificationChannels\Fcm\Notifications\FcmAndroidNotification;
+use NotificationChannels\Fcm\Notifications\FcmWebNotification;
 
-class FcmAndroidMessage extends FcmMessage
+class FcmWebMessage extends FcmMessage
 {
     /**
-     * @var FcmAndroidNotification
+     * @var FcmWebNotification
      */
     protected $notification;
 
     /**
      * @inheritdoc
-     * @param FcmAndroidNotification $notification
+     * @param FcmWebNotification $notification
      */
     public function setNotification($notification)
     {
@@ -23,7 +23,7 @@ class FcmAndroidMessage extends FcmMessage
     }
 
     /**
-     * @return FcmAndroidNotification
+     * @return FcmWebNotification
      */
     public function getNotification()
     {

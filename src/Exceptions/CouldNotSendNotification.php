@@ -6,8 +6,8 @@ use GuzzleHttp\Exception\RequestException;
 
 class CouldNotSendNotification extends \Exception
 {
-    public static function serviceRespondedWithAnError($response)
+    public static function serviceRespondedWithAnError(RequestException $requestException)
     {
-        return new static($response);
+        return new static($requestException->getMessage());
     }
 }

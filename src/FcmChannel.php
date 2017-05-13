@@ -34,24 +34,34 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
+        // Get the token/s from the model
         $tokens = (array) $notifiable->routeNotificationForFcm();
-        if (! $tokens) {
+
+        if (empty($tokens)) {
             return;
         }
 
+        // Get the message from the notification class
         $message = $notification->toFcm($notifiable);
-        if (! $message) {
+
+        if (empty($message)) {
             return;
         }
 
-        $message->setRegistrationIds($tokens);
+        if (count($tokens) == 1) {
+            // Do not use multicast if there is only one recipient
+            $message->setTo($tokens[0]);
+        } else {
+            // Use multicast because there are multiple recipients
+            $message->setRegistrationIds($tokens);
+        }
 
         try {
             $this->client->request('POST', '/fcm/send', [
                 'body' => $message->toJson(),
             ]);
         } catch (RequestException $requestException) {
-            throw CouldNotSendNotification::serviceRespondedWithAnError($requestException->getMessage());
+            throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }
     }
 }
