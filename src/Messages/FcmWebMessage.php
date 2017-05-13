@@ -12,7 +12,7 @@ class FcmWebMessage extends FcmMessage
     protected $notification;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @param FcmWebNotification $notification
      */
     public function setNotification($notification)

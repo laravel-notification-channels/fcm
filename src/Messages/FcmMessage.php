@@ -32,7 +32,7 @@ class FcmMessage
     protected $priority;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $timeToLive = 2419200;
 
@@ -50,6 +50,11 @@ class FcmMessage
      * @var FcmNotification
      */
     protected $notification;
+
+    public static function create()
+    {
+        return new static();
+    }
 
     /**
      * This parameter specifies the recipient of a message.

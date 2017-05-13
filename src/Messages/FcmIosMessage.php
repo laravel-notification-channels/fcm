@@ -51,7 +51,7 @@ class FcmIosMessage extends FcmMessage
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @param FcmIosNotification $notification
      */
     public function setNotification($notification)

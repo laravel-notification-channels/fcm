@@ -12,7 +12,7 @@ class FcmAndroidMessage extends FcmMessage
     protected $notification;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @param FcmAndroidNotification $notification
      */
     public function setNotification($notification)

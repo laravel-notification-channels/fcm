@@ -19,13 +19,18 @@ class FcmNotification
      */
     protected $clickAction;
 
+    public static function create()
+    {
+        return new static();
+    }
+
     /**
      * [Optional] The notification's title.
      *
      * This field is not visible on iOS phones and tablets.
      *
      * @param string $title
-     * @return FcmNotification $this
+     * @return $this
      */
     public function setTitle($title)
     {
