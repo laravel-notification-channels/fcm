@@ -1,10 +1,4 @@
-Use this repo as a skeleton for your new channel, once you're done please submit a Pull Request on [this repo](https://github.com/laravel-notification-channels/new-channels) with all the files.
-
-Here's the latest documentation on Laravel 5.3 Notifications System: 
-
-https://laravel.com/docs/master/notifications
-
-# A Boilerplate repo for contributions
+# Laravel FCM (Firebase Cloud Messaging) Notification Channel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/fcm)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
