@@ -51,6 +51,10 @@ class FcmMessage
      */
     protected $notification;
 
+    const PRIORITY_NORMAL = 'normal';
+
+    const PRIORITY_HIGH = 'high';
+
     public static function create()
     {
         return new static();
