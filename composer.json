@@ -1,7 +1,7 @@
 {
     "name": "laravel-notification-channels/fcm",
     "description": "FCM (Firebase Cloud Messaging) Notifications Driver for Laravel",
-    "homepage": "https://github.com/laravel-notification-channels/fcm",
+    "homepage": "https://github.com/CoreProc/fcm",
     "license": "MIT",
     "authors": [
         {
