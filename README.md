@@ -29,7 +29,7 @@ This package makes it easy to send notifications using [Firebase Cloud Messaging
 
 Install this package with Composer:
 
-    composer require laravel-notification-channels/fcm
+    composer require coreproc/laravel-notification-channel-fcm
     
 Register the ServiceProvider in your config/app.php:
 
