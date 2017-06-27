@@ -78,57 +78,6 @@ class AccountActivated extends Notification
 }
 ```
 
-The above example is a generic example of a notification. However, in real-life applications, we have found that we need to define custom parameters for each
-platform (Android, iOS, and Web). Thus, we created `Message` and `Notification` objects for each. Here example usages below:
-
-```php
-class AccountActivated extends Notification
-{
-    public function via($notifiable)
-    {
-        return [FcmChannel::class];
-    }
-
-    public function toFcm($notifiable)
-    {
-        switch ($notifiable->fcmToken->os) { // just a made up variable - you'll want to define this in your application
-            case 'android':
-                $fcmAndroidNotification = FcmAndroidNotification::create()
-                    ->setIcon('myicon')
-                    ->setSound('bell')
-                    ->setTitle('Your account has been activated')
-                    ->setBody('Thank you for activating your account.');
-                    
-                return FcmAndroidMessage::create()
-                    ->setPriority(FcmMessage::PRIORITY_HIGH)
-                    ->setTimeToLive(86400)
-                    ->setNotification($fcmAndroidNotification);
-            case 'ios':
-               $fcmIosNotification = FcmIosNotification::create()
-                   ->setBadge(1)
-                   ->setSound('tinkle')
-                   ->setTitle('Your account has been activated')
-                   ->setBody('Thank you for activating your account.');
-                   
-               return FcmIosMessage::create()
-                   ->setContentAvailable(true)
-                   ->setPriority(FcmMessage::PRIORITY_HIGH)
-                   ->setTimeToLive(86400)
-                   ->setNotification($fcmIosNotification);
-            case 'web':
-               $fcmWebNotification = FcmWebNotification::create()
-                   ->setIcon('http://test.com/test.jpg')
-                   ->setTitle('Your account has been activated')
-                   ->setBody('Thank you for activating your account.');
-                   
-               return FcmWebMessage::create()
-                   ->setTimeToLive(86400)
-                   ->setNotification($fcmWebNotification);
-        }
-    }
-}
-```
-
 ### Available Message methods
 
 The `Message` object can differ between different operating systems (Android, iOS, and Chrome). In this perspective, a `Message` object is available for each 
@@ -158,6 +107,20 @@ Note that there is no guarantee of the order in which messages get sent.
 
 Note: A maximum of 4 different collapse keys is allowed at any given time. This means a FCM connection server can simultaneously store 4 different send-to-sync 
 messages per client app. If you exceed this number, there is no guarantee which 4 collapse keys the FCM connection server will keep.
+
+```php
+setContentAvailable(bool $contentAvailable)
+```
+
+On iOS, use this field to represent content-available in the APNs payload. When a notification or message is sent and this is set to true, an inactive client 
+app is awoken.
+
+```php
+setMutableContent(bool $mutableContent)
+```
+
+Currently for iOS 10+ devices only. On iOS, use this field to represent mutable-content in the APNS payload. When a notification is sent and this is set to 
+true, the content of the notification can be modified before it is displayed, using a Notification Service app extension.
 
 ```php
 setPriority(string $priority)
@@ -208,48 +171,6 @@ setNotification(FcmNotification $notification)
 
 This parameter specifies the predefined, user-visible key-value pairs of the notification payload.
 
-#### FcmAndroidMessage
-
-The Android `Message` object does not have any differences from the main `FcmMessage` except that it expects an `FcmAndroidNotification` object in the 
-`setNotification` method.
-
-```php
-setNotification(FcmAndroidNotification $notification)
-```
-
-#### FcmIosMessage
-
-There are two additional `Message` methods specifically defined for iOS.
-
-```php
-setContentAvailable(bool $contentAvailable)
-```
-
-On iOS, use this field to represent content-available in the APNs payload. When a notification or message is sent and this is set to true, an inactive client 
-app is awoken.
-
-```php
-setMutableContent(bool $mutableContent)
-```
-
-Currently for iOS 10+ devices only. On iOS, use this field to represent mutable-content in the APNS payload. When a notification is sent and this is set to 
-true, the content of the notification can be modified before it is displayed, using a Notification Service app extension.
-
-```php
-setNotification(FcmIosNotification $notification)
-```
-
-This method expects the `FcmIosNotfication` object to be passed.
-
-#### FcmWebMessage
-
-The Web (or Chrome) `Message` object does not have any differences from the main `FcmMessage` except that it expects an `FcmWebNotification` object in the 
-`setNotification` method.
-
-```php
-setNotification(FcmWebNotification $notification)
-```
-
 ### Available Notification Methods
 
 Each `FcmMessage` object expects an optional `notification` object which holds the content of the notification. A notification object for each platform is
@@ -285,8 +206,6 @@ Web:
 The action associated with a user click on the notification.
 For all URL values, secure HTTPS is required.
 
-#### FcmAndroidNotification
-
 ```php
 setAndroidChannelId(string $androidChannelId)
 ```
@@ -304,8 +223,20 @@ setIcon(string $icon)
 
 The notification's icon.
 
-Sets the notification icon to myicon for drawable resource myicon. If you don't send this key in the request, FCM displays the launcher icon specified in
+Android: Sets the notification icon to myicon for drawable resource myicon. If you don't send this key in the request, FCM displays the launcher icon specified in
 your app manifest.
+
+Web: The URL to use for the notification's icon.
+
+```php
+setBadge(string $badge)
+```
+
+This is an iOS specific variable. The value of the badge on the home screen app icon.
+
+If not specified, the badge is not changed.
+
+If set to 0, the badge is removed.
 
 ```php
 setSound(string $sound)
@@ -313,13 +244,15 @@ setSound(string $sound)
 
 The sound to play when the device receives the notification.
 
-Supports "default" or the filename of a sound resource bundled in the app. Sound files must reside in `/res/raw/`.
+Android: Supports "default" or the filename of a sound resource bundled in the app. Sound files must reside in `/res/raw/`.
+
+iOS: Sound files can be in the main bundle of the client app or in the `Library/Sounds` folder of the app's data container.
 
 ```php
 setTag(string $tag)
 ```
 
-dentifier used to replace existing notifications in the notification drawer.
+Identifier used to replace existing notifications in the notification drawer.
 
 If not specified, each request creates a new notification.
 
@@ -356,61 +289,6 @@ setTitleLocArgs(array $titleLocArgs)
 
 Variable string values to be used in place of the format specifiers in title_loc_key to use to localize the title text to the user's current
 localization.
-
-#### FcmIosNotification
-
-```php
-setBadge(string $badge)
-```
-The value of the badge on the home screen app icon.
-
-If not specified, the badge is not changed.
-
-If set to 0, the badge is removed.
-
-```php
-setSound(string $sound)
-```
-
-The sound to play when the device receives the notification.
-
-Sound files can be in the main bundle of the client app or in the `Library/Sounds` folder of the app's data container.
-
-```php
-setBodyLocKey(string $bodyLocKey)
-```
-
-The key to the body string in the app's string resources to use to localize the body text to the user's current localization.
-Corresponds to loc-key in the APNs payload.
-
-```php
-setBodyLocArgs(array $bodyLocArgs)
-```
-
-Variable string values to be used in place of the format specifiers in body_loc_key to use to localize the body text to the user's current localization.
-Corresponds to loc-args in the APNs payload.
-
-```php
-setTitleLocKey(string $titleLocKey)
-```
-
-The key to the title string in the app's string resources to use to localize the title text to the user's current localization.
-Corresponds to title-loc-key in the APNs payload.
-
-```php
-setTitleLocArgs(array $titleLocArgs)
-```
-
-Variable string values to be used in place of the format specifiers in title_loc_key to use to localize the title text to the user's current localization.
-Corresponds to title-loc-args in the APNs payload.
-
-#### FcmWebNotification
-
-```php
-setIcon(string $icon)
-```
-
-The URL to use for the notification's icon.
 
 ## Changelog
 
