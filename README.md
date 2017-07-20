@@ -1,6 +1,6 @@
 # Laravel FCM (Firebase Cloud Messaging) Notification Channel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/fcm)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/coreproc/laravel-notification-channel-fcm.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-fcm)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/travis/laravel-notification-channels/fcm/master.svg?style=flat-square)](https://travis-ci.org/laravel-notification-channels/fcm)
 [![StyleCI](https://styleci.io/repos/91098630/shield)](https://styleci.io/repos/91098630)
