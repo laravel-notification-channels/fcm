@@ -2,7 +2,7 @@
 
 namespace NotificationChannels\Fcm;
 
-use NotificationChannels\Fcm\Notifications\FcmNotification;
+use NotificationChannels\Fcm\FcmNotification;
 
 class FcmMessage
 {
