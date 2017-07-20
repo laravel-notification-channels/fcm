@@ -2,8 +2,6 @@
 
 namespace NotificationChannels\Fcm;
 
-use NotificationChannels\Fcm\FcmNotification;
-
 class FcmMessage
 {
     const PRIORITY_NORMAL = 'normal';
