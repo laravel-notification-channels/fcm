@@ -2,12 +2,10 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/coreproc/laravel-notification-channel-fcm.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-fcm)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/laravel-notification-channels/fcm/master.svg?style=flat-square)](https://travis-ci.org/laravel-notification-channels/fcm)
 [![StyleCI](https://styleci.io/repos/91098630/shield)](https://styleci.io/repos/91098630)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/621d780f-fdb7-479d-8fb2-683cbbc3ee4c.svg?style=flat-square)](https://insight.sensiolabs.com/projects/621d780f-fdb7-479d-8fb2-683cbbc3ee4c)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/fcm.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/fcm)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/laravel-notification-channels/fcm/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/fcm/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/fcm)
+[![Quality Score](https://img.shields.io/scrutinizer/g/CoreProc/fcm.svg?style=flat-square)](https://scrutinizer-ci.com/g/CoreProc/fcm)
+[![Total Downloads](https://img.shields.io/packagist/dt/coreproc/laravel-notification-channel-fcm.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-fcm)
 
 This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel 5.3 and 5.4.
 
