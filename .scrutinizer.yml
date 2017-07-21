@@ -18,4 +18,4 @@ checks:
         fix_doc_comments: true
 
 tools:
-    external_code_coverage: true
+    external_code_coverage: false

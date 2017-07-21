@@ -7,9 +7,6 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
-//use NotificationChannels\Fcm\Events\MessageWasSent;
-//use NotificationChannels\Fcm\Events\SendingMessage;
-
 class FcmChannel
 {
     const DEFAULT_API_URL = 'https://fcm.googleapis.com';
