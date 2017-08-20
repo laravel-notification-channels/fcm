@@ -10,6 +10,7 @@ use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 class FcmChannel
 {
     const DEFAULT_API_URL = 'https://fcm.googleapis.com';
+    const MAX_TOKEN_PER_REQUEST = 1000;
 
     /**
      * @var Client
@@ -48,11 +49,18 @@ class FcmChannel
         if (count($tokens) == 1) {
             // Do not use multicast if there is only one recipient
             $message->setTo($tokens[0]);
+            $this->sendToFcm($message);
         } else {
             // Use multicast because there are multiple recipients
-            $message->setRegistrationIds($tokens);
+            $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+            foreach ($partialTokens as $tokens) {
+                $message->setRegistrationIds($tokens);
+                $this->sendToFcm($message);
+            }
         }
+    }
 
+    private function sendToFcm($message) {
         try {
             $this->client->request('POST', '/fcm/send', [
                 'body' => $message->toJson(),
