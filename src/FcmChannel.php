@@ -60,7 +60,8 @@ class FcmChannel
         }
     }
 
-    private function sendToFcm($message) {
+    private function sendToFcm($message)
+    {
         try {
             $this->client->request('POST', '/fcm/send', [
                 'body' => $message->toJson(),
