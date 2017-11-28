@@ -31,6 +31,13 @@
             "NotificationChannels\\Fcm\\Test\\": "tests"
         }
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NotificationChannels\\Fcm\\FcmServiceProvider"
+            ]
+        }
+    },
     "scripts": {
         "test": "vendor/bin/phpunit"
     },

@@ -29,7 +29,7 @@ Install this package with Composer:
 
     composer require coreproc/laravel-notification-channel-fcm
     
-Register the ServiceProvider in your config/app.php:
+Register the ServiceProvider in your config/app.php (Skip this step if you are using Laravel 5.5):
 
     NotificationChannels\Fcm\FcmServiceProvider::class,
 
