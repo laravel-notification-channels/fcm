@@ -340,15 +340,17 @@ class FcmMessage
     public function toArray()
     {
         return [
-            'to'               => $this->to,
+            'to' => $this->to,
             'registration_ids' => $this->registrationIds,
-            'condition'        => $this->condition,
-            'collapse_key'     => $this->collapseKey,
-            'priority'         => $this->priority,
-            'time_to_live'     => $this->timeToLive,
-            'dry_run'          => $this->dryRun,
-            'data'             => $this->data,
-            'notification'     => $this->notification->toArray(),
+            'condition' => $this->condition,
+            'collapse_key' => $this->collapseKey,
+            'content_available' => $this->contentAvailable,
+            'mutable_content' => $this->mutableContent,
+            'priority' => $this->priority,
+            'time_to_live' => $this->timeToLive,
+            'dry_run' => $this->dryRun,
+            'data' => $this->data,
+            'notification' => $this->notification->toArray(),
         ];
     }
 }
