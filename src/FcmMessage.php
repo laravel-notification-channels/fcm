@@ -339,7 +339,7 @@ class FcmMessage
      */
     public function toArray()
     {
-        return [
+        $array = [
             'to' => $this->to,
             'registration_ids' => $this->registrationIds,
             'condition' => $this->condition,
@@ -350,7 +350,12 @@ class FcmMessage
             'time_to_live' => $this->timeToLive,
             'dry_run' => $this->dryRun,
             'data' => $this->data,
-            'notification' => $this->notification->toArray(),
         ];
+
+        if ($this->notification) {
+            $array['notification'] = $this->notification->toArray();
+        }
+
+        return $array;
     }
 }
