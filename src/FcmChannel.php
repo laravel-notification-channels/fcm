@@ -60,7 +60,7 @@ class FcmChannel
         }
     }
 
-    private function sendToFcm($message)
+    protected function sendToFcm($message)
     {
         try {
             $this->client->request('POST', '/fcm/send', [
