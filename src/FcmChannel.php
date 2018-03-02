@@ -33,7 +33,10 @@ class FcmChannel
     public function send($notifiable, Notification $notification)
     {
         // Get the token/s from the model
-        $tokens = (array) $notifiable->routeNotificationForFcm();
+        if (! $notifiable->routeNotificationFor('fcm')) {
+            return;
+        }
+        $tokens = (array) $notifiable->routeNotificationFor('fcm');
 
         if (empty($tokens)) {
             return;
