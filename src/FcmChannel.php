@@ -39,26 +39,48 @@ class FcmChannel
         }
 
         // Get the message from the notification class
-        $message = $notification->toFcm($notifiable);
+        $fcmMessage = $notification->toFcm($notifiable);
 
-        if (empty($message)) {
+        if (empty($fcmMessage)) {
             return;
         }
 
         if (count($tokens) == 1) {
             // Do not use multicast if there is only one recipient
-            $message->setTo($tokens[0]);
+            $fcmMessage->setTo($tokens[0]);
         } else {
             // Use multicast because there are multiple recipients
-            $message->setRegistrationIds($tokens);
+            $fcmMessage->setRegistrationIds($tokens);
         }
 
         try {
             $this->client->request('POST', '/fcm/send', [
-                'body' => $message->toJson(),
+                'headers' => $this->getClientHeaders($fcmMessage),
+                'body' => $fcmMessage->toJson(),
             ]);
         } catch (RequestException $requestException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
         }
+    }
+
+    /**
+     * This is used to get the headers for the FCM request. We can add customization to the headers here.
+     *
+     * @param FcmMessage $fcmMessage
+     * @return array
+     */
+    protected function getClientHeaders(FcmMessage $fcmMessage)
+    {
+        $headers = [
+            'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
+            'Content-Type' => 'application/json',
+        ];
+
+        // Override the FCM key from the config
+        if (! empty($fcmMessage->getFcmKey())) {
+            $headers['Authorization'] = sprintf('key=%s', $fcmMessage->getFcmKey());
+        }
+
+        return $headers;
     }
 }

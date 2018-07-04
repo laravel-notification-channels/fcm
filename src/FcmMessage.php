@@ -11,6 +11,11 @@ class FcmMessage
     /**
      * @var string
      */
+    protected $fcmKey;
+
+    /**
+     * @var string
+     */
     protected $to;
 
     /**
@@ -66,6 +71,27 @@ class FcmMessage
     public static function create()
     {
         return new static();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFcmKey()
+    {
+        return $this->fcmKey;
+    }
+
+    /**
+     * This method can be used to override the default FCM key used in the config/broadcasting.php.
+     *
+     * @param string $fcmKey
+     * @return $this
+     */
+    public function setFcmKey($fcmKey)
+    {
+        $this->fcmKey = $fcmKey;
+
+        return $this;
     }
 
     /**
