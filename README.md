@@ -71,6 +71,7 @@ class AccountActivated extends Notification
         return FcmMessage::create()
             ->setPriority(FcmMessage::PRIORITY_HIGH)
             ->setTimeToLive(86400)
+            ->setFcmKey('xxxx') // (Optional) Use this to override the FCM key from broadcasting.php
             ->setNotification($fcmNotification);
     }
 }
@@ -81,10 +82,16 @@ class AccountActivated extends Notification
 The `Message` object can differ between different operating systems (Android, iOS, and Chrome). In this perspective, a `Message` object is available for each 
 platform which extends the `FcmMessage` object.
 
-All the methods below are explained and defined in the Firebase Cloud Messaging documentation found here: 
+Mostly all the methods below are explained and defined in the Firebase Cloud Messaging documentation found here: 
 [https://firebase.google.com/docs/cloud-messaging/http-server-ref](https://firebase.google.com/docs/cloud-messaging/http-server-ref)
 
 #### FcmMessage
+
+```php
+setFcmKey(string $fcmKey)
+```
+
+This method can be used to override the default FCM key defined in the `config/broadcasting.php` file.
 
 ```php
 setCondition(string $condition)

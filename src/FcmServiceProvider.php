@@ -17,10 +17,6 @@ class FcmServiceProvider extends ServiceProvider
             ->give(function () {
                 return new Client([
                     'base_uri' => config('broadcasting.connections.fcm.url', FcmChannel::DEFAULT_API_URL),
-                    'headers'  => [
-                        'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
-                        'Content-Type'  => 'application/json',
-                    ],
                 ]);
             });
     }
