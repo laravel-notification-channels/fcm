@@ -51,19 +51,19 @@ class FcmChannel
 
         if (count($tokens) == 1) {
             // Do not use multicast if there is only one recipient
-            $message->setTo($tokens[0]);
-            $this->sendToFcm($message);
+            $fcmMessage->setTo($tokens[0]);
+            $this->sendToFcm($fcmMessage);
         } else {
             // Use multicast because there are multiple recipients
             $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
             foreach ($partialTokens as $tokens) {
-                $message->setRegistrationIds($tokens);
-                $this->sendToFcm($message);
+                $fcmMessage->setRegistrationIds($tokens);
+                $this->sendToFcm($fcmMessage);
             }
         }
     }
 
-    protected function sendToFcm($message)
+    protected function sendToFcm($fcmMessage)
     {
         try {
             $this->client->request('POST', '/fcm/send', [
