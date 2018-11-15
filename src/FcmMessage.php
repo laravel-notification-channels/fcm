@@ -59,7 +59,7 @@ class FcmMessage
     protected $dryRun = false;
 
     /**
-     * @var object
+     * @var array|object
      */
     protected $data;
 
@@ -304,7 +304,7 @@ class FcmMessage
     }
 
     /**
-     * @return object
+     * @return array|object
      */
     public function getData()
     {
@@ -321,7 +321,7 @@ class FcmMessage
      * collapse_key).
      * Values in string types are recommended. You have to convert values in objects or other non-string data types (e.g., integers or booleans) to string.
      *
-     * @param object $data
+     * @param array|object $data
      * @return $this
      */
     public function setData($data)
