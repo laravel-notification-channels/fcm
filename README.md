@@ -77,6 +77,33 @@ class AccountActivated extends Notification
 }
 ```
 
+You will have to set a `routeNotificationForFcm()` method in your notifiable model. For example:
+
+```
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    ....
+
+    /**
+     * Specifies the user's FCM token
+     *
+     * @return string
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
+}
+```
+
+Once you have that in place, you can simply send a notification to the user via
+
+```
+$user->notify(new AccountActivated);
+```
+
 ### Available Message methods
 
 The `Message` object can differ between different operating systems (Android, iOS, and Chrome). In this perspective, a `Message` object is available for each 
