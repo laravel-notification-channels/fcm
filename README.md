@@ -26,11 +26,9 @@ This package makes it easy to send notifications using [Firebase Cloud Messaging
 
 Install this package with Composer:
 
-    composer require laravel-notification-channels/fcm
-    
-Register the ServiceProvider in your config/app.php (Skip this step if you are using Laravel 5.5):
-
-    NotificationChannels\Fcm\FcmServiceProvider::class,
+```bash
+composer require laravel-notification-channels/fcm
+```
 
 ### Setting up the FCM service
 
@@ -39,13 +37,15 @@ You need to register for a server key from Firebase for your application. Start 
 
 Once you've registered and set up your prroject, add the API key to your configuration in `config/broadcasting.php`
 
-    'connections' => [
-        ....
-        'fcm' => [
-            'key' => env('FCM_KEY'),
-        ],
-        ...
-    ]
+```php
+'connections' => [
+    ....
+    'fcm' => [
+        'key' => env('FCM_KEY'),
+    ],
+    ...
+]
+```
 
 ## Usage
 
@@ -78,7 +78,7 @@ class AccountActivated extends Notification
 
 You will have to set a `routeNotificationForFcm()` method in your notifiable model. For example:
 
-```
+```php
 class User extends Authenticatable
 {
     use Notifiable;
@@ -99,7 +99,7 @@ class User extends Authenticatable
 
 Once you have that in place, you can simply send a notification to the user via
 
-```
+```php
 $user->notify(new AccountActivated);
 ```
 
