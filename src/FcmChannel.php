@@ -51,7 +51,7 @@ class FcmChannel
 
         if (count($tokens) == 1) {
             // Do not use multicast if there is only one recipient
-            $fcmMessage->setTo($tokens[0]);
+            $fcmMessage->setTo(reset($tokens));
             $this->sendToFcm($fcmMessage);
         } else {
             // Use multicast because there are multiple recipients
