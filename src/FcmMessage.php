@@ -2,7 +2,9 @@
 
 namespace NotificationChannels\Fcm;
 
-class FcmMessage
+use Kreait\Firebase\Messaging\Message;
+
+class FcmMessage implements Message
 {
     const PRIORITY_NORMAL = 'normal';
 

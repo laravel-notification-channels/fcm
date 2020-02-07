@@ -6,8 +6,8 @@
     "authors": [
         {
             "name": "Chris Bautista",
-            "email": "chrisbjr@gmail.com",
-            "homepage": "https://www.coreproc.com",
+            "email": "chris.bautista@coreproc.ph",
+            "homepage": "https://coreproc.com",
             "role": "Developer"
         }
     ],
@@ -15,7 +15,8 @@
         "php": ">=7.0",
         "guzzlehttp/guzzle": "^6.2",
         "illuminate/notifications": "~5.5 || ~6.0",
-        "illuminate/support": "~5.5 || ~6.0"
+        "illuminate/support": "~5.5 || ~6.0",
+        "kreait/laravel-firebase": "^1.3"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.5",

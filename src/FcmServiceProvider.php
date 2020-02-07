@@ -12,12 +12,6 @@ class FcmServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->when(FcmChannel::class)
-            ->needs(Client::class)
-            ->give(function () {
-                return new Client([
-                    'base_uri' => config('broadcasting.connections.fcm.url', FcmChannel::DEFAULT_API_URL),
-                ]);
-            });
+        //
     }
 }

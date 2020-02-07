@@ -5,22 +5,17 @@ namespace NotificationChannels\Fcm;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
+use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 class FcmChannel
 {
-    const DEFAULT_API_URL = 'https://fcm.googleapis.com';
-    const MAX_TOKEN_PER_REQUEST = 1000;
+    const MAX_TOKEN_PER_REQUEST = 500;
 
     /**
      * @var Client
      */
     protected $client;
-
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
 
     /**
      * Send the given notification.
@@ -63,36 +58,8 @@ class FcmChannel
         }
     }
 
-    protected function sendToFcm($fcmMessage)
+    protected function sendToFcm(Message $fcmMessage)
     {
-        try {
-            $this->client->request('POST', '/fcm/send', [
-                'headers' => $this->getClientHeaders($fcmMessage),
-                'body' => $fcmMessage->toJson(),
-            ]);
-        } catch (RequestException $requestException) {
-            throw CouldNotSendNotification::serviceRespondedWithAnError($requestException);
-        }
-    }
 
-    /**
-     * This is used to get the headers for the FCM request. We can add customization to the headers here.
-     *
-     * @param FcmMessage $fcmMessage
-     * @return array
-     */
-    protected function getClientHeaders(FcmMessage $fcmMessage)
-    {
-        $headers = [
-            'Authorization' => sprintf('key=%s', config('broadcasting.connections.fcm.key')),
-            'Content-Type' => 'application/json',
-        ];
-
-        // Override the FCM key from the config
-        if (! empty($fcmMessage->getFcmKey())) {
-            $headers['Authorization'] = sprintf('key=%s', $fcmMessage->getFcmKey());
-        }
-
-        return $headers;
     }
 }
