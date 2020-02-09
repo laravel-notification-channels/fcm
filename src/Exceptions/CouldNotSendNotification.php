@@ -2,12 +2,12 @@
 
 namespace NotificationChannels\Fcm\Exceptions;
 
-use GuzzleHttp\Exception\RequestException;
+use Kreait\Firebase\Exception\MessagingException;
 
 class CouldNotSendNotification extends \Exception
 {
-    public static function serviceRespondedWithAnError(RequestException $requestException)
+    public static function serviceRespondedWithAnError(MessagingException $messagingException)
     {
-        return new static($requestException->getMessage());
+        return new static($messagingException->getMessage());
     }
 }
