@@ -28,6 +28,7 @@ class FcmChannel
      * @param mixed $notifiable
      * @param \Illuminate\Notifications\Notification $notification
      *
+     * @return array|void
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
@@ -62,10 +63,7 @@ class FcmChannel
                 $responses[] = $this->sendToFcm($fcmMessage);
             }
         }
-
-        if (method_exists($notifiable, 'storeResponses')) {
-            $notifiable->storeResponses($responses);
-        }
+        return $responses;
     }
 
     protected function sendToFcm($fcmMessage)
