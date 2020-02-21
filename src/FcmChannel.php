@@ -3,10 +3,10 @@
 namespace NotificationChannels\Fcm;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use Psr\Http\Message\ResponseInterface;
 
 class FcmChannel
 {
@@ -29,7 +29,7 @@ class FcmChannel
      * @param mixed $notifiable
      * @param \Illuminate\Notifications\Notification $notification
      *
-     * @return Response[]
+     * @return ResponseInterface[]
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
@@ -69,7 +69,7 @@ class FcmChannel
 
     /**
      * @param $fcmMessage
-     * @return Response|void
+     * @return ResponseInterface
      * @throws CouldNotSendNotification
      */
     protected function sendToFcm($fcmMessage)
