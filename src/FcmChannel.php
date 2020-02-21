@@ -64,6 +64,7 @@ class FcmChannel
                 $responses[] = $this->sendToFcm($fcmMessage);
             }
         }
+
         return $responses;
     }
 
