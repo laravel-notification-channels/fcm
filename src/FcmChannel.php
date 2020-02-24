@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use Psr\Http\Message\ResponseInterface;
 
 class FcmChannel
 {
@@ -28,10 +29,12 @@ class FcmChannel
      * @param mixed $notifiable
      * @param \Illuminate\Notifications\Notification $notification
      *
+     * @return ResponseInterface[]
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
     {
+        $responses = [];
         // Get the token/s from the model
         if (! $notifiable->routeNotificationFor('fcm')) {
             return;
@@ -52,21 +55,28 @@ class FcmChannel
         if (count($tokens) == 1) {
             // Do not use multicast if there is only one recipient
             $fcmMessage->setTo(reset($tokens));
-            $this->sendToFcm($fcmMessage);
+            $responses[] = $this->sendToFcm($fcmMessage);
         } else {
             // Use multicast because there are multiple recipients
             $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
             foreach ($partialTokens as $tokens) {
                 $fcmMessage->setRegistrationIds($tokens);
-                $this->sendToFcm($fcmMessage);
+                $responses[] = $this->sendToFcm($fcmMessage);
             }
         }
+
+        return $responses;
     }
 
+    /**
+     * @param $fcmMessage
+     * @return ResponseInterface
+     * @throws CouldNotSendNotification
+     */
     protected function sendToFcm($fcmMessage)
     {
         try {
-            $this->client->request('POST', '/fcm/send', [
+            return $this->client->request('POST', '/fcm/send', [
                 'headers' => $this->getClientHeaders($fcmMessage),
                 'body' => $fcmMessage->toJson(),
             ]);
