@@ -25,6 +25,7 @@ class FcmChannel
      * @param mixed $notifiable
      * @param Notification $notification
      *
+     * @return array
      * @throws CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
@@ -42,6 +43,8 @@ class FcmChannel
             throw new CouldNotSendNotification('The toFcm() method only accepts instances of ' . Message::class);
         }
 
+        $responses = [];
+
         if (! is_array($token)) {
             if ($fcmMessage instanceof CloudMessage) {
                 $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
@@ -51,24 +54,28 @@ class FcmChannel
                 $fcmMessage->setToken($token);
             }
 
-            $this->sendToFcm($fcmMessage);
+            $responses[] = $this->sendToFcm($fcmMessage);
         } else {
             // Use multicast because there are multiple recipients
             $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
             foreach ($partialTokens as $tokens) {
-                $this->sendToFcmMulticast($fcmMessage, $tokens);
+                $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
             }
         }
+
+        return $responses;
     }
 
     /**
      * @param Message $fcmMessage
+     *
+     * @return mixed
      * @throws CouldNotSendNotification
      */
     protected function sendToFcm(Message $fcmMessage)
     {
         try {
-            FirebaseMessaging::send($fcmMessage);
+            return FirebaseMessaging::send($fcmMessage);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
@@ -77,12 +84,14 @@ class FcmChannel
     /**
      * @param $fcmMessage
      * @param $tokens
+     *
+     * @return mixed
      * @throws CouldNotSendNotification
      */
     protected function sendToFcmMulticast($fcmMessage, $tokens)
     {
         try {
-            FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+            return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
