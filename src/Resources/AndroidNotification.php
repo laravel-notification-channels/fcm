@@ -70,7 +70,7 @@ class AndroidNotification implements FcmResource
     protected $ticker;
 
     /**
-     * @var boolean|null
+     * @var bool|null
      */
     protected $sticky;
 
@@ -80,7 +80,7 @@ class AndroidNotification implements FcmResource
     protected $eventTime;
 
     /**
-     * @var boolean|null
+     * @var bool|null
      */
     protected $localOnly;
 
@@ -90,17 +90,17 @@ class AndroidNotification implements FcmResource
     protected $notificationPriority;
 
     /**
-     * @var boolean|null
+     * @var bool|null
      */
     protected $defaultSound;
 
     /**
-     * @var boolean|null
+     * @var bool|null
      */
     protected $defaultVibrateTimings;
 
     /**
-     * @var boolean|null
+     * @var bool|null
      */
     protected $defaultLightSettings;
 
