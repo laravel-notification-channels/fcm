@@ -1,1 +1,8 @@
 preset: laravel
+
+enabled:
+  - concat_with_spaces
+
+disabled:
+  - concat_without_spaces
+  - phpdoc_summary

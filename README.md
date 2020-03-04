@@ -8,6 +8,12 @@
 
 This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel 5.5+ & 6.x
 
+## Version 2 Released (March 4, 2020)
+
+V2.0.0 has been released and FCM API calls has been migrated from legacy HTTP to HTTP v1 (docs from Firebase 
+[here](https://firebase.google.com/docs/cloud-messaging/migrate-v1)). This is a breaking change so notifications using
+v1.x should not upgrade to v2.x of this package unless you plan on migrating your notification classes.
+
 ## Contents
 
 - [Installation](#installation)
@@ -27,31 +33,33 @@ This package makes it easy to send notifications using [Firebase Cloud Messaging
 Install this package with Composer:
 
 ```bash
-composer require laravel-notification-channels/fcm
+composer require laravel-notification-channels/fcm:^2.0
 ```
 
 ### Setting up the FCM service
 
-You need to register for a server key from Firebase for your application. Start by creating a project here: 
-[https://console.firebase.google.com](https://console.firebase.google.com)
+This package now uses the [laravel-firebase](https://github.com/kreait/laravel-firebase) library to authenticate and 
+make the API calls to Firebase. Follow the [configuration](https://github.com/kreait/laravel-firebase#configuration)
+steps specified in their readme before using this.
 
-Once you've registered and set up your prroject, add the API key to your configuration in `config/broadcasting.php`
-
-```php
-'connections' => [
-    ....
-    'fcm' => [
-        'key' => env('FCM_KEY'),
-    ],
-    ...
-]
-```
+After following their configuration steps, make sure that you've specified your `FIREBASE_CREDENTIALS` in your .env 
+file. 
 
 ## Usage
 
-You can now send notifications via FCM by creating an `FcmNotification` and an `FcmMessages`:
+After setting up your Firebase credentials, you can now send notifications via FCM by a Notification class and sending
+it via the `FcmChannel::class`. Here is an example:
 
 ```php
+use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
+
 class AccountActivated extends Notification
 {
     public function via($notifiable)
@@ -61,17 +69,18 @@ class AccountActivated extends Notification
 
     public function toFcm($notifiable)
     {
-        // The FcmNotification holds the notification parameters
-        $fcmNotification = FcmNotification::create()
-            ->setTitle('Your account has been activated')
-            ->setBody('Thank you for activating your account.');
-            
-        // The FcmMessage contains other options for the notification
-        return FcmMessage::create()
-            ->setPriority(FcmMessage::PRIORITY_HIGH)
-            ->setTimeToLive(86400)
-            ->setFcmKey('xxxx') // (Optional) Use this to override the FCM key from broadcasting.php
-            ->setNotification($fcmNotification);
+        return FcmMessage::create()->set
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle('Account Activated')
+                ->setBody('Your account has been activated.')
+                ->setImage('http://example.com/url-to-image-here.png'))
+            ->setAndroid(
+                AndroidConfig::create()
+                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
+                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
+            )->setApns(
+                ApnsConfig::create()
+                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
     }
 }
 ```
@@ -97,7 +106,7 @@ class User extends Authenticatable
 }
 ```
 
-Once you have that in place, you can simply send a notification to the user via
+Once you have that in place, you can simply send a notification to the user by doing the following:
 
 ```php
 $user->notify(new AccountActivated);
@@ -105,221 +114,46 @@ $user->notify(new AccountActivated);
 
 ### Available Message methods
 
-The `Message` object can differ between different operating systems (Android, iOS, and Chrome). In this perspective, a `Message` object is available for each 
-platform which extends the `FcmMessage` object.
-
-Mostly all the methods below are explained and defined in the Firebase Cloud Messaging documentation found here: 
-[https://firebase.google.com/docs/cloud-messaging/http-server-ref](https://firebase.google.com/docs/cloud-messaging/http-server-ref)
-
-#### FcmMessage
+The `FcmMessage` class contains the following methods for defining the payload. All these methods correspond to the 
+available payload defined in the 
+[FCM API documentation](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages). Refer to this link to
+find all the available data you can set in your FCM notification.
 
 ```php
-setFcmKey(string $fcmKey)
+setName(string $name)
 ```
 
-This method can be used to override the default FCM key defined in the `config/broadcasting.php` file.
+```php
+setData(array $data)
+```
+
+```php
+setNotification(\NotificationChannels\Fcm\Resources\Notification $notification)
+```
+
+```php
+setAndroid(NotificationChannels\Fcm\Resources\AndroidConfig $androidConfig)
+```
+
+```php
+setApns(NotificationChannels\Fcm\Resources\ApnsConfig $apnsConfig)
+```
+
+```php
+setWebpush(NotificationChannels\Fcm\Resources\WebpushConfig $webpushConfig)
+```
+
+```php
+setFcmOptions(NotificationChannels\Fcm\Resources\FcmOptions $fcmOptions)
+```
+
+```php
+setTopic(string $topic)
+```
 
 ```php
 setCondition(string $condition)
 ```
-
-This parameter specifies a logical expression of conditions that determine the message target.
-Supported condition: Topic, formatted as "'yourTopic' in topics". This value is case-insensitive.
-Supported operators: &&, ||. Maximum two operators per topic message supported.
-
-```php
-setCollapseKey(string $collapseKey)
-```
-
-This parameter identifies a group of messages (e.g., with collapse_key: "Updates Available") that can be collapsed, so that only the last message gets sent when
- delivery can be resumed. This is intended to avoid sending too many of the same messages when the device comes back online or becomes active.
-
-Note that there is no guarantee of the order in which messages get sent.
-
-Note: A maximum of 4 different collapse keys is allowed at any given time. This means a FCM connection server can simultaneously store 4 different send-to-sync 
-messages per client app. If you exceed this number, there is no guarantee which 4 collapse keys the FCM connection server will keep.
-
-```php
-setContentAvailable(bool $contentAvailable)
-```
-
-On iOS, use this field to represent content-available in the APNs payload. When a notification or message is sent and this is set to true, an inactive client 
-app is awoken.
-
-```php
-setMutableContent(bool $mutableContent)
-```
-
-Currently for iOS 10+ devices only. On iOS, use this field to represent mutable-content in the APNS payload. When a notification is sent and this is set to 
-true, the content of the notification can be modified before it is displayed, using a Notification Service app extension.
-
-```php
-setPriority(string $priority)
-```
-
-Sets the priority of the message. Valid values are `FcmMessage::PRIORITY_NORMAL` and `FcmMessage::PRIORITY::HIGH`. On iOS, these correspond to APNs priorities 5
-and 10.
-
-By default, notification messages are sent with high priority, and data messages are sent with normal priority. Normal priority optimizes the client app's 
-battery consumption and should be used unless immediate delivery is required. For messages with normal priority, the app may receive the message with 
-unspecified delay.
-
-When a message is sent with high priority, it is sent immediately, and the app can wake a sleeping device and open a network connection to your server.
-
-```php
-setTimeToLive($timeToLive)
-```
-
-This parameter specifies how long (in seconds) the message should be kept in FCM storage if the device is offline. The maximum time to live supported is 4 
-weeks, and the default value is 4 weeks.
-
-```php
-setDryRun(bool $dryRun)
-```
-
-This parameter, when set to `true`, allows developers to test a request without actually sending a message. Default value is `false`.
-
-```php
-setData(string $data)
-```
-
-This parameter specifies the custom key-value pairs of the message's payload.
-
-For example, with data:{"score":"3x1"}:
-On iOS, if the message is sent via APNS, it represents the custom data fields. If it is sent via FCM connection server, it would be represented as key value 
-dictionary in AppDelegate application:didReceiveRemoteNotification:.
-
-On Android, this would result in an intent extra named score with the string value 3x1.
-
-The key should not be a reserved word ("from" or any word starting with "google" or "gcm"). Do not use any of the words defined in this table (such as 
-collapse_key).
-
-Values in string types are recommended. You have to convert values in objects or other non-string data types (e.g., integers or booleans) to string.
-
-```php
-setNotification(FcmNotification $notification)
-```
-
-This parameter specifies the predefined, user-visible key-value pairs of the notification payload.
-
-### Available Notification Methods
-
-Each `FcmMessage` object expects an optional `notification` object which holds the content of the notification. A notification object for each platform is
-available which extends a main `FcmNotification` object.
-
-#### FcmNotification
-
-```php
-setTitle(string $title)
-```
-
-The notification's title. This field is not visible on iOS phones and tablets.
-
-```php
-setBody(string $body)
-```
-
-The notification's body text.
-
-```php
-setClickAction(string $clickAction)
-```
-
-iOS:
-The action associated with a user click on the notification.
-Corresponds to category in the APNs payload.
-
-Android:
-The action associated with a user click on the notification.
-If specified, an activity with a matching intent filter is launched when a user clicks on the notification.
-
-Web:
-The action associated with a user click on the notification.
-For all URL values, secure HTTPS is required.
-
-```php
-setAndroidChannelId(string $androidChannelId)
-```
-
-The notification's channel id (new in Android O).
-
-The app must create a channel with this ID before any notification with this key is received.
-
-If you don't send this key in the request, or if the channel id provided has not yet been created by your app, FCM uses the channel id specified in your app
-manifest.
-
-```php
-setIcon(string $icon)
-```
-
-The notification's icon.
-
-Android: Sets the notification icon to myicon for drawable resource myicon. If you don't send this key in the request, FCM displays the launcher icon specified in
-your app manifest.
-
-Web: The URL to use for the notification's icon.
-
-```php
-setBadge(string $badge)
-```
-
-This is an iOS specific variable. The value of the badge on the home screen app icon.
-
-If not specified, the badge is not changed.
-
-If set to 0, the badge is removed.
-
-```php
-setSound(string $sound)
-```
-
-The sound to play when the device receives the notification.
-
-Android: Supports "default" or the filename of a sound resource bundled in the app. Sound files must reside in `/res/raw/`.
-
-iOS: Sound files can be in the main bundle of the client app or in the `Library/Sounds` folder of the app's data container.
-
-```php
-setTag(string $tag)
-```
-
-Identifier used to replace existing notifications in the notification drawer.
-
-If not specified, each request creates a new notification.
-
-If specified and a notification with the same tag is already being shown, the new notification replaces the existing one in the notification drawer.
-
-```php
-setColor(string $color)
-```
-
-The notification's icon color, expressed in `#rrggbb` format.
-
-```php
-setBodyLocKey(string $bodyLocKey)
-```
-
-The key to the body string in the app's string resources to use to localize the body text to the user's current localization.
-
-```php
-setBodyLocArgs(array $bodyLocArgs)
-```
-
-The key to the title string in the app's string resources to use to localize the title text to the user's current localization.
-
-```php
-setTitleLocKey(string $titleLocKey)
-```
-
-Variable string values to be used in place of the format specifiers in body_loc_key to use to localize the body text to the user's current
-localization.
-
-```php
-setTitleLocArgs(array $titleLocArgs)
-```
-
-Variable string values to be used in place of the format specifiers in title_loc_key to use to localize the title text to the user's current
-localization.
 
 ## Changelog
 
