@@ -85,7 +85,7 @@ class ApnsConfig implements FcmResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function toArray(): array
     {

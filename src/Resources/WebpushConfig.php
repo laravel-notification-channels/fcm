@@ -109,7 +109,7 @@ class WebpushConfig implements FcmResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function toArray(): array
     {
