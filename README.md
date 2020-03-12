@@ -69,7 +69,7 @@ class AccountActivated extends Notification
 
     public function toFcm($notifiable)
     {
-        return FcmMessage::create()->set
+        return FcmMessage::create()
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('Account Activated')
                 ->setBody('Your account has been activated.')
