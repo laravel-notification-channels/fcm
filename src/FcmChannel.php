@@ -5,7 +5,6 @@ namespace NotificationChannels\Fcm;
 use GuzzleHttp\Client;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
-use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
 use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
@@ -30,10 +29,10 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $token = $notifiable->routeNotificationFor('fcm');
+        $tokens = (array) $notifiable->routeNotificationFor('fcm');
 
-        if (empty($token)) {
-            throw new CouldNotSendNotification('No FCM token found for notifiable.');
+        if (empty($tokens)) {
+            return [];
         }
 
         // Get the message from the notification class
@@ -45,40 +44,13 @@ class FcmChannel
 
         $responses = [];
 
-        if (! is_array($token)) {
-            if ($fcmMessage instanceof CloudMessage) {
-                $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
-            }
-
-            if ($fcmMessage instanceof FcmMessage) {
-                $fcmMessage->setToken($token);
-            }
-
-            $responses[] = $this->sendToFcm($fcmMessage);
-        } else {
-            // Use multicast because there are multiple recipients
-            $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
-            foreach ($partialTokens as $tokens) {
-                $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
-            }
+        // Use multicast because there are multiple recipients
+        $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+        foreach ($partialTokens as $tokens) {
+            $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
         }
 
         return $responses;
-    }
-
-    /**
-     * @param Message $fcmMessage
-     *
-     * @return mixed
-     * @throws CouldNotSendNotification
-     */
-    protected function sendToFcm(Message $fcmMessage)
-    {
-        try {
-            return FirebaseMessaging::send($fcmMessage);
-        } catch (MessagingException $messagingException) {
-            throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
-        }
     }
 
     /**
