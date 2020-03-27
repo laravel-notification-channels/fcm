@@ -85,7 +85,7 @@ class AccountActivated extends Notification
 }
 ```
 
-You will have to set a `routeNotificationForFcm()` method in your notifiable model. For example:
+You will have to set a `routeNotificationForFcm()` method in your notifiable model, wich will return one or an array of tokens. For example:
 
 ```php
 class User extends Authenticatable
