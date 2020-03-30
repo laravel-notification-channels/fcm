@@ -33,7 +33,7 @@ class FcmChannel
         $token = $notifiable->routeNotificationFor('fcm');
 
         if (empty($token)) {
-            throw new CouldNotSendNotification('No FCM token found for notifiable.');
+            return [];
         }
 
         // Get the message from the notification class
