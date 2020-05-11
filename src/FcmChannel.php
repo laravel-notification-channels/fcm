@@ -30,7 +30,7 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $token = $notifiable->routeNotificationFor('fcm');
+        $token = $notifiable->routeNotificationFor('fcm', $notification);
 
         if (empty($token)) {
             return [];
