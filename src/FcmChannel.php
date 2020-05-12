@@ -4,10 +4,12 @@ namespace NotificationChannels\Fcm;
 
 use GuzzleHttp\Client;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Event;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
 use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
+use NotificationChannels\Fcm\Event\FcmSentEvent;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 class FcmChannel
@@ -30,6 +32,7 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
+
         $token = $notifiable->routeNotificationFor('fcm', $notification);
 
         if (empty($token)) {
@@ -39,13 +42,13 @@ class FcmChannel
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
 
-        if (! $fcmMessage instanceof Message) {
+        if (!$fcmMessage instanceof Message) {
             throw new CouldNotSendNotification('The toFcm() method only accepts instances of ' . Message::class);
         }
 
         $responses = [];
 
-        if (! is_array($token)) {
+        if (!is_array($token)) {
             if ($fcmMessage instanceof CloudMessage) {
                 $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
             }
@@ -63,7 +66,21 @@ class FcmChannel
             }
         }
 
+        $this->fireResponseEvent($responses);
+
         return $responses;
+    }
+
+
+    /**
+     * Fire Fcm Response Event
+     *
+     * @param [type] $responses
+     * @return void
+     */
+    protected function fireResponseEvent($responses): void
+    {
+        Event::dispatch(new FcmSentEvent($responses));
     }
 
     /**
