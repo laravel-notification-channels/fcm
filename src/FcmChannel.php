@@ -51,10 +51,6 @@ class FcmChannel
     {
         $token = $notifiable->routeNotificationFor('fcm', $notification);
 
-        if (empty($token)) {
-            return [];
-        }
-
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
 
@@ -70,15 +66,39 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (is_array($token)) {
-                // Use multicast when there are multiple recipients
+
+            if(empty($token) && $fcmMessage instanceof  FcmMessage){
+
+                if($fcmMessage->getTopic() || $fcmMessage->getCondition())
+                    $responses[] = $this->sendToFcm($fcmMessage);
+
+            }else if(empty($token) && $fcmMessage instanceof  CloudMessage){
+
+                if($fcmMessage->hasTarget())
+                    $responses[] = $this->sendToFcm($fcmMessage);
+
+            }else if(empty($token)){
+
+                $responses = [];
+
+            }else if (! is_array($token)) {
+                if ($fcmMessage instanceof CloudMessage) {
+                    $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
+                }
+
+                if ($fcmMessage instanceof FcmMessage) {
+                    $fcmMessage->setToken($token);
+                }
+
+                $responses[] = $this->sendToFcm($fcmMessage);
+            } else {
+                // Use multicast because there are multiple recipients
                 $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
                 foreach ($partialTokens as $tokens) {
                     $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
                 }
-            } else {
-                $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
+
         } catch (MessagingException $exception) {
             $this->failedNotification($notifiable, $notification, $exception);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
@@ -105,21 +125,12 @@ class FcmChannel
 
     /**
      * @param \Kreait\Firebase\Messaging\Message $fcmMessage
-     * @param $token
      * @return array
      * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
-    protected function sendToFcm(Message $fcmMessage, $token)
+    protected function sendToFcm(Message $fcmMessage)
     {
-        if ($fcmMessage instanceof CloudMessage) {
-            $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
-        }
-
-        if ($fcmMessage instanceof FcmMessage) {
-            $fcmMessage->setToken($token);
-        }
-
         return $this->messaging()->send($fcmMessage);
     }
 
