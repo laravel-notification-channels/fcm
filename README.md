@@ -33,7 +33,7 @@ v1.x should not upgrade to v2.x of this package unless you plan on migrating you
 Install this package with Composer:
 
 ```bash
-composer require laravel-notification-channels/fcm:^2.0
+composer require laravel-notification-channels/fcm:~2.0
 ```
 
 ### Setting up the FCM service
