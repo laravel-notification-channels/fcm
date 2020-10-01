@@ -2,12 +2,11 @@
 
 namespace NotificationChannels\Fcm;
 
-use GuzzleHttp\Client;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
-use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
+use Kreait\Firebase\Messaging as MessagingClient;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 class FcmChannel
@@ -15,9 +14,19 @@ class FcmChannel
     const MAX_TOKEN_PER_REQUEST = 500;
 
     /**
-     * @var Client
+     * @var MessagingClient
      */
     protected $client;
+
+    /**
+     * FcmChannel constructor.
+     *
+     * @param MessagingClient $client
+     */
+    public function __construct(MessagingClient $client)
+    {
+        $this->client = $client;
+    }
 
     /**
      * Send the given notification.
@@ -75,7 +84,7 @@ class FcmChannel
     protected function sendToFcm(Message $fcmMessage)
     {
         try {
-            return FirebaseMessaging::send($fcmMessage);
+            return $this->client->send($fcmMessage);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
@@ -91,7 +100,7 @@ class FcmChannel
     protected function sendToFcmMulticast($fcmMessage, $tokens)
     {
         try {
-            return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+            return $this->client->sendMulticast($fcmMessage, $tokens);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
