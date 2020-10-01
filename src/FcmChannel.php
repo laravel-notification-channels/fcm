@@ -2,12 +2,15 @@
 
 namespace NotificationChannels\Fcm;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging as MessagingClient;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use Throwable;
 
 class FcmChannel
 {
@@ -18,14 +21,21 @@ class FcmChannel
      */
     protected $client;
 
+    /***
+     * @var Dispatcher
+     */
+    protected $events;
+
     /**
      * FcmChannel constructor.
      *
      * @param MessagingClient $client
+     * @param Dispatcher $dispatcher
      */
-    public function __construct(MessagingClient $client)
+    public function __construct(MessagingClient $client, Dispatcher $dispatcher)
     {
         $this->client = $client;
+        $this->events = $dispatcher;
     }
 
     /**
@@ -65,6 +75,7 @@ class FcmChannel
                 $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
         } catch (MessagingException $exception) {
+            $this->failedNotification($notifiable, $notification, $exception);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
@@ -101,5 +112,26 @@ class FcmChannel
     protected function sendToFcmMulticast($fcmMessage, array $tokens)
     {
         return $this->client->sendMulticast($fcmMessage, $tokens);
+    }
+
+    /**
+     * Dispatch failed event.
+     *
+     * @param $notifiable
+     * @param Notification $notification
+     * @param Throwable $exception
+     * @return array|null
+     */
+    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    {
+        return $this->events->dispatch(new NotificationFailed(
+            $notifiable,
+            $notification,
+            self::class,
+            [
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]
+        ));
     }
 }
