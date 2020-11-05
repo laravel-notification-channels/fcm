@@ -7,7 +7,6 @@ use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
-use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 class FcmChannel
@@ -18,6 +17,11 @@ class FcmChannel
      * @var Client
      */
     protected $client;
+
+    /**
+     * @var string|null
+     */
+    protected $fcmProject = null;
 
     /**
      * Send the given notification.
@@ -41,6 +45,10 @@ class FcmChannel
 
         if (! $fcmMessage instanceof Message) {
             throw new CouldNotSendNotification('The toFcm() method only accepts instances of ' . Message::class);
+        }
+
+        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase') && method_exists($notification, 'fcmProject')) {
+            $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
 
         $responses = [];
@@ -75,7 +83,11 @@ class FcmChannel
     protected function sendToFcm(Message $fcmMessage)
     {
         try {
-            return FirebaseMessaging::send($fcmMessage);
+            if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
+                return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->send($fcmMessage);
+            }
+
+            return \Kreait\Laravel\Firebase\Facades\FirebaseMessaging::send($fcmMessage);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
@@ -91,7 +103,11 @@ class FcmChannel
     protected function sendToFcmMulticast($fcmMessage, $tokens)
     {
         try {
-            return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+            if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
+                return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->sendMulticast($fcmMessage, $tokens);
+            }
+
+            return \Kreait\Laravel\Firebase\Facades\FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
         } catch (MessagingException $messagingException) {
             throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
         }
