@@ -3,14 +3,13 @@
 namespace NotificationChannels\Fcm\Test;
 
 use Illuminate\Contracts\Events\Dispatcher;
-use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Messaging as MessagingClient;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Kreait\Firebase\Messaging as MessagingClient;
 use Mockery;
-use PHPUnit\Framework\TestCase;
-use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Fcm\FcmChannel;
+use PHPUnit\Framework\TestCase;
 
 class FcmChannelTest extends TestCase
 {
@@ -53,7 +52,7 @@ class FcmChannelTest extends TestCase
 
     public function test_it_can_send_a_notification_to_multiple_tokens()
     {
-        $this->events->shouldNotReceive("dispatch");
+        $this->events->shouldNotReceive('dispatch');
         $this->client->shouldReceive('sendMulticast')
             ->once()
             ->andReturn(\Kreait\Firebase\Messaging\MulticastSendReport::withItems([]));
@@ -72,7 +71,7 @@ class FcmChannelTest extends TestCase
 
     public function test_it_should_throw_exception_on_failure()
     {
-        $this->events->shouldReceive("dispatch")->once();
+        $this->events->shouldReceive('dispatch')->once();
 
         $this->client->shouldReceive('send')
             ->once()
@@ -82,7 +81,6 @@ class FcmChannelTest extends TestCase
 
         $this->channel->send(new TestNotifiableModel(), new TestNotification());
     }
-
 }
 
 class TestNotifiableModel
@@ -104,7 +102,6 @@ class TestNotifiableModelWithMultipleTokens
         return ['random_token', 'another_token'];
     }
 }
-
 
 class TestNotifiableModelWithoutToken
 {

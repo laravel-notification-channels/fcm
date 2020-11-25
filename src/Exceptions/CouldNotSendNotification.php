@@ -3,7 +3,6 @@
 namespace NotificationChannels\Fcm\Exceptions;
 
 use Exception;
-use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\Message;
 
 class CouldNotSendNotification extends Exception
