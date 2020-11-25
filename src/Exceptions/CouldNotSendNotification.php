@@ -8,7 +8,7 @@ use Kreait\Firebase\Messaging\Message;
 
 class CouldNotSendNotification extends Exception
 {
-    public static function serviceRespondedWithAnError(MessagingException $exception)
+    public static function serviceRespondedWithAnError(\Throwable $exception)
     {
         return new static(
             $exception->getMessage(),

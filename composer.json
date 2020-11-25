@@ -41,7 +41,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit"
+        "test": "vendor/bin/phpunit --testdox --color=always"
     },
     "config": {
         "sort-packages": true

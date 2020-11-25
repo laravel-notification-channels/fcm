@@ -74,7 +74,7 @@ class FcmChannel
             } else {
                 $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
-        } catch (MessagingException $exception) {
+        } catch (\Throwable $exception) {
             $this->failedNotification($notifiable, $notification, $exception);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
