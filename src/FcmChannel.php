@@ -9,17 +9,13 @@ use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging as MessagingClient;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
+use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use Throwable;
 
 class FcmChannel
 {
     const MAX_TOKEN_PER_REQUEST = 500;
-
-    /**
-     * @var MessagingClient
-     */
-    protected $client;
 
     /***
      * @var Dispatcher
@@ -29,12 +25,10 @@ class FcmChannel
     /**
      * FcmChannel constructor.
      *
-     * @param MessagingClient $client
      * @param Dispatcher $dispatcher
      */
-    public function __construct(MessagingClient $client, Dispatcher $dispatcher)
+    public function __construct(Dispatcher $dispatcher)
     {
-        $this->client = $client;
         $this->events = $dispatcher;
     }
 
@@ -99,7 +93,7 @@ class FcmChannel
             $fcmMessage->setToken($token);
         }
 
-        return $this->client->send($fcmMessage);
+        return FirebaseMessaging::send($fcmMessage);
     }
 
     /**
@@ -111,7 +105,7 @@ class FcmChannel
      */
     protected function sendToFcmMulticast($fcmMessage, array $tokens)
     {
-        return $this->client->sendMulticast($fcmMessage, $tokens);
+        return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
     }
 
     /**
