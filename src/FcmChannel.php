@@ -2,21 +2,34 @@
 
 namespace NotificationChannels\Fcm;
 
-use GuzzleHttp\Client;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
+use Kreait\Firebase\Messaging as MessagingClient;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use Throwable;
 
 class FcmChannel
 {
     const MAX_TOKEN_PER_REQUEST = 500;
 
-    /**
-     * @var Client
+    /***
+     * @var Dispatcher
      */
-    protected $client;
+    protected $events;
+
+    /**
+     * FcmChannel constructor.
+     *
+     * @param Dispatcher $dispatcher
+     */
+    public function __construct(Dispatcher $dispatcher)
+    {
+        $this->events = $dispatcher;
+    }
 
     /**
      * @var string|null
@@ -30,7 +43,7 @@ class FcmChannel
      * @param Notification $notification
      *
      * @return array
-     * @throws CouldNotSendNotification
+     * @throws CouldNotSendNotification|\Kreait\Firebase\Exception\FirebaseException
      */
     public function send($notifiable, Notification $notification)
     {
@@ -44,7 +57,7 @@ class FcmChannel
         $fcmMessage = $notification->toFcm($notifiable);
 
         if (! $fcmMessage instanceof Message) {
-            throw new CouldNotSendNotification('The toFcm() method only accepts instances of ' . Message::class);
+            throw CouldNotSendNotification::invalidMessage();
         }
 
         if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase') && method_exists($notification, 'fcmProject')) {
@@ -53,22 +66,19 @@ class FcmChannel
 
         $responses = [];
 
-        if (! is_array($token)) {
-            if ($fcmMessage instanceof CloudMessage) {
-                $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
+        try {
+            if (is_array($token)) {
+                // Use multicast when there are multiple recipients
+                $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
+                foreach ($partialTokens as $tokens) {
+                    $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+                }
+            } else {
+                $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
-
-            if ($fcmMessage instanceof FcmMessage) {
-                $fcmMessage->setToken($token);
-            }
-
-            $responses[] = $this->sendToFcm($fcmMessage);
-        } else {
-            // Use multicast because there are multiple recipients
-            $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
-            foreach ($partialTokens as $tokens) {
-                $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
-            }
+        } catch (MessagingException $exception) {
+            $this->failedNotification($notifiable, $notification, $exception);
+            throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
         return $responses;
@@ -76,40 +86,62 @@ class FcmChannel
 
     /**
      * @param Message $fcmMessage
-     *
-     * @return mixed
-     * @throws CouldNotSendNotification
+     * @param $token
+     * @return array
+     * @throws MessagingException
+     * @throws \Kreait\Firebase\Exception\FirebaseException
      */
-    protected function sendToFcm(Message $fcmMessage)
+    protected function sendToFcm(Message $fcmMessage, $token)
     {
-        try {
-            if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
-                return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->send($fcmMessage);
-            }
-
-            return \Kreait\Laravel\Firebase\Facades\FirebaseMessaging::send($fcmMessage);
-        } catch (MessagingException $messagingException) {
-            throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
+        if ($fcmMessage instanceof CloudMessage) {
+            $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
         }
+
+        if ($fcmMessage instanceof FcmMessage) {
+            $fcmMessage->setToken($token);
+        }
+
+        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
+            return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->send($fcmMessage);
+        }
+
+        return FirebaseMessaging::send($fcmMessage);
     }
 
     /**
      * @param $fcmMessage
-     * @param $tokens
-     *
-     * @return mixed
-     * @throws CouldNotSendNotification
+     * @param array $tokens
+     * @return MessagingClient\MulticastSendReport
+     * @throws MessagingException
+     * @throws \Kreait\Firebase\Exception\FirebaseException
      */
-    protected function sendToFcmMulticast($fcmMessage, $tokens)
+    protected function sendToFcmMulticast($fcmMessage, array $tokens)
     {
-        try {
-            if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
-                return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->sendMulticast($fcmMessage, $tokens);
-            }
-
-            return \Kreait\Laravel\Firebase\Facades\FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
-        } catch (MessagingException $messagingException) {
-            throw CouldNotSendNotification::serviceRespondedWithAnError($messagingException);
+        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
+            return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->sendMulticast($fcmMessage, $tokens);
         }
+
+        return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+    }
+
+    /**
+     * Dispatch failed event.
+     *
+     * @param $notifiable
+     * @param Notification $notification
+     * @param Throwable $exception
+     * @return array|null
+     */
+    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    {
+        return $this->events->dispatch(new NotificationFailed(
+            $notifiable,
+            $notification,
+            self::class,
+            [
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]
+        ));
     }
 }

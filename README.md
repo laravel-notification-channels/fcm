@@ -105,11 +105,32 @@ class User extends Authenticatable
     /**
      * Specifies the user's FCM token
      *
-     * @return string
+     * @return string|array
      */
     public function routeNotificationForFcm()
     {
         return $this->fcm_token;
+    }
+}
+```
+
+You can also return an array of tokens to send notifications via multicast to different user devices.
+
+```php
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    ....
+
+    /**
+     * Specifies the user's FCM tokens
+     *
+     * @return string|array
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->getDeviceTokens();
     }
 }
 ```
