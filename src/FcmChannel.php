@@ -60,6 +60,7 @@ class FcmChannel
             throw CouldNotSendNotification::invalidMessage();
         }
 
+        $this->fcmProject = null;
         if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase') && method_exists($notification, 'fcmProject')) {
             $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
