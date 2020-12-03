@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Fcm;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
@@ -61,7 +62,7 @@ class FcmChannel
         }
 
         $this->fcmProject = null;
-        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase') && method_exists($notification, 'fcmProject')) {
+        if (method_exists($notification, 'fcmProject')) {
             $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
 
@@ -86,6 +87,20 @@ class FcmChannel
     }
 
     /**
+     * @return void
+     */
+    protected function messaging()
+    {
+        try {
+            $messaging = app('firebase.manager')->project($this->fcmProject)->messaging();
+        } catch (BindingResolutionException $e) {
+            $messaging = app('firebase.messaging');
+        }
+
+        return $messaging;
+    }
+
+    /**
      * @param Message $fcmMessage
      * @param $token
      * @return array
@@ -102,11 +117,7 @@ class FcmChannel
             $fcmMessage->setToken($token);
         }
 
-        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
-            return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->send($fcmMessage);
-        }
-
-        return FirebaseMessaging::send($fcmMessage);
+        return $this->messaging()->send($fcmMessage);
     }
 
     /**
@@ -118,11 +129,7 @@ class FcmChannel
      */
     protected function sendToFcmMulticast($fcmMessage, array $tokens)
     {
-        if (class_exists('Kreait\\Laravel\\Firebase\\Facades\\Firebase')) {
-            return \Kreait\Laravel\Firebase\Facades\Firebase::project($this->fcmProject)->messaging()->sendMulticast($fcmMessage, $tokens);
-        }
-
-        return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+        return $this->messaging()->sendMulticast($fcmMessage, $tokens);
     }
 
     /**
