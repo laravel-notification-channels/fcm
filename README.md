@@ -83,6 +83,13 @@ class AccountActivated extends Notification
                 ApnsConfig::create()
                     ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
     }
+
+    // optional method when using kreait/laravel-firebase:^3.0, this method can be omitted, defaults to the default project
+    public function fcmProject($notifiable, $message)
+    {
+        // $message is what is returned by `toFcm`
+        return 'app'; // name of the firebase project to use
+    }
 }
 ```
 
