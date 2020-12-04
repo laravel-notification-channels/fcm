@@ -2,14 +2,13 @@
 
 namespace NotificationChannels\Fcm;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
-use Kreait\Firebase\Messaging as MessagingClient;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
-use Kreait\Laravel\Firebase\Facades\FirebaseMessaging;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use Throwable;
 
@@ -17,15 +16,15 @@ class FcmChannel
 {
     const MAX_TOKEN_PER_REQUEST = 500;
 
-    /***
-     * @var Dispatcher
+    /**
+     * @var \Illuminate\Contracts\Events\Dispatcher
      */
     protected $events;
 
     /**
      * FcmChannel constructor.
      *
-     * @param Dispatcher $dispatcher
+     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
      */
     public function __construct(Dispatcher $dispatcher)
     {
@@ -33,13 +32,19 @@ class FcmChannel
     }
 
     /**
+     * @var string|null
+     */
+    protected $fcmProject = null;
+
+    /**
      * Send the given notification.
      *
      * @param mixed $notifiable
-     * @param Notification $notification
+     * @param \Illuminate\Notifications\Notification $notification
      *
      * @return array
-     * @throws CouldNotSendNotification|\Kreait\Firebase\Exception\FirebaseException
+     * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
+     * @throws \Kreait\Firebase\Exception\FirebaseException
      */
     public function send($notifiable, Notification $notification)
     {
@@ -54,6 +59,11 @@ class FcmChannel
 
         if (! $fcmMessage instanceof Message) {
             throw CouldNotSendNotification::invalidMessage();
+        }
+
+        $this->fcmProject = null;
+        if (method_exists($notification, 'fcmProject')) {
+            $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
 
         $responses = [];
@@ -77,10 +87,24 @@ class FcmChannel
     }
 
     /**
-     * @param Message $fcmMessage
+     * @return \Kreait\Firebase\Messaging
+     */
+    protected function messaging()
+    {
+        try {
+            $messaging = app('firebase.manager')->project($this->fcmProject)->messaging();
+        } catch (BindingResolutionException $e) {
+            $messaging = app('firebase.messaging');
+        }
+
+        return $messaging;
+    }
+
+    /**
+     * @param \Kreait\Firebase\Messaging\Message $fcmMessage
      * @param $token
      * @return array
-     * @throws MessagingException
+     * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
     protected function sendToFcm(Message $fcmMessage, $token)
@@ -93,27 +117,27 @@ class FcmChannel
             $fcmMessage->setToken($token);
         }
 
-        return FirebaseMessaging::send($fcmMessage);
+        return $this->messaging()->send($fcmMessage);
     }
 
     /**
      * @param $fcmMessage
      * @param array $tokens
-     * @return MessagingClient\MulticastSendReport
-     * @throws MessagingException
+     * @return \Kreait\Firebase\Messaging\MulticastSendReport
+     * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
     protected function sendToFcmMulticast($fcmMessage, array $tokens)
     {
-        return FirebaseMessaging::sendMulticast($fcmMessage, $tokens);
+        return $this->messaging()->sendMulticast($fcmMessage, $tokens);
     }
 
     /**
      * Dispatch failed event.
      *
-     * @param $notifiable
-     * @param Notification $notification
-     * @param Throwable $exception
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
+     * @param \Throwable $exception
      * @return array|null
      */
     protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
