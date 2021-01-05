@@ -48,11 +48,7 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $token = $notifiable->routeNotificationFor('fcm', $notification);
-
-        if (empty($token)) {
-            return [];
-        }
+        $token = $this->getToken($notifiable);
 
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
@@ -84,6 +80,29 @@ class FcmChannel
         }
 
         return $responses;
+    }
+
+    /**
+     * @param $notifiable
+     *
+     * @return mixed
+     * @throws CouldNotSendNotification
+     */
+    protected function getToken($notifiable)
+    {
+        if ($notifiable->routeNotificationFor(self::class)) {
+            return $notifiable->routeNotificationFor(self::class);
+        }
+
+        if ($notifiable->routeNotificationFor('fcm')) {
+            return $notifiable->routeNotificationFor('fcm');
+        }
+
+        if (isset($notifiable->fcm_token)) {
+            return $notifiable->fcm_token;
+        }
+
+        throw CouldNotSendNotification::invalidToken();
     }
 
     /**
