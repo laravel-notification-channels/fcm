@@ -10,6 +10,7 @@ use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use ReflectionException;
 use Throwable;
 
 class FcmChannel
@@ -94,6 +95,8 @@ class FcmChannel
         try {
             $messaging = app('firebase.manager')->project($this->fcmProject)->messaging();
         } catch (BindingResolutionException $e) {
+            $messaging = app('firebase.messaging');
+        } catch (ReflectionException $e) {
             $messaging = app('firebase.messaging');
         }
 
