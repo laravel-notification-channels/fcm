@@ -66,9 +66,9 @@ class ApnsConfig implements FcmResource
     }
 
     /**
-     * @return ApnsFcmOptions
+     * @return ApnsFcmOptions|null
      */
-    public function getFcmOptions(): ApnsFcmOptions
+    public function getFcmOptions(): ?ApnsFcmOptions
     {
         return $this->fcmOptions;
     }
