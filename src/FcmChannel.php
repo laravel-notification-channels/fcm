@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
+use Kreait\Firebase\Messaging\MulticastSendReport;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use ReflectionException;
 use Throwable;
@@ -70,7 +71,9 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (is_array($token)) {
+            $usingMulticast = is_array($token);
+
+            if ($usingMulticast) {
                 // Use multicast when there are multiple recipients
                 $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
                 foreach ($partialTokens as $tokens) {
@@ -78,6 +81,17 @@ class FcmChannel
                 }
             } else {
                 $responses[] = $this->sendToFcm($fcmMessage, $token);
+            }
+
+            if ($usingMulticast) {
+                foreach ($responses as $response) {
+                    /** @var MulticastSendReport $response */
+                    if ($response->hasFailures()) {
+                        $failedItems = $response->failures()->getItems();
+
+                        throw $failedItems[0]->error();
+                    }
+                }
             }
         } catch (MessagingException $exception) {
             $this->failedNotification($notifiable, $notification, $exception);
