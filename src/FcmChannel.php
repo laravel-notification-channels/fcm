@@ -66,22 +66,17 @@ class FcmChannel
         $responses = [];
 
         try {
-
-            if(empty($token) && $fcmMessage instanceof  FcmMessage){
-
-                if($fcmMessage->getTopic() || $fcmMessage->getCondition())
+            if (empty($token) && $fcmMessage instanceof  FcmMessage){
+                if ($fcmMessage->getTopic() || $fcmMessage->getCondition()){
                     $responses[] = $this->sendToFcm($fcmMessage);
-
-            }else if(empty($token) && $fcmMessage instanceof  CloudMessage){
-
-                if($fcmMessage->hasTarget())
+                }
+            } elseif (empty($token) && $fcmMessage instanceof  CloudMessage){
+                if ($fcmMessage->hasTarget()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
-
-            }else if(empty($token)){
-
+                }
+            } elseif (empty($token)){
                 $responses = [];
-
-            }else if (! is_array($token)) {
+            } elseif (! is_array($token)) {
                 if ($fcmMessage instanceof CloudMessage) {
                     $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
                 }
