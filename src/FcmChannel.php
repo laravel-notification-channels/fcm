@@ -67,14 +67,14 @@ class FcmChannel
 
         try {
             if (empty($token) && $fcmMessage instanceof  FcmMessage){
-                if ($fcmMessage->getTopic() || $fcmMessage->getCondition()){
+                if ($fcmMessage->getTopic() || $fcmMessage->getCondition()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
                 }
-            } elseif (empty($token) && $fcmMessage instanceof  CloudMessage){
+            } elseif (empty($token) && $fcmMessage instanceof  CloudMessage) {
                 if ($fcmMessage->hasTarget()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
                 }
-            } elseif (empty($token)){
+            } elseif (empty($token)) {
                 $responses = [];
             } elseif (! is_array($token)) {
                 if ($fcmMessage instanceof CloudMessage) {
