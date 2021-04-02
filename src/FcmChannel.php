@@ -66,7 +66,7 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (empty($token) && $fcmMessage instanceof  FcmMessage){
+            if (empty($token) && $fcmMessage instanceof  FcmMessage) {
                 if ($fcmMessage->getTopic() || $fcmMessage->getCondition()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
                 }
