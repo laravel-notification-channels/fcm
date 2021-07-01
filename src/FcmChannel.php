@@ -70,7 +70,7 @@ class FcmChannel
                 if ($fcmMessage->getTopic() || $fcmMessage->getCondition()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
                 }
-            } elseif (empty($token) && $fcmMessage instanceof  CloudMessage) {
+            } elseif (empty($token) && $fcmMessage instanceof CloudMessage) {
                 if ($fcmMessage->hasTarget()) {
                     $responses[] = $this->sendToFcm($fcmMessage);
                 }
