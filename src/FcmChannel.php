@@ -38,6 +38,11 @@ class FcmChannel
     protected $fcmProject = null;
 
     /**
+     * @var array|null
+     */
+    protected $fcmProjects = null;
+
+    /**
      * Send the given notification.
      *
      * @param mixed $notifiable
@@ -58,7 +63,7 @@ class FcmChannel
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
 
-        if (! $fcmMessage instanceof Message) {
+        if (!$fcmMessage instanceof Message) {
             throw CouldNotSendNotification::invalidMessage();
         }
 
@@ -67,21 +72,31 @@ class FcmChannel
             $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
 
+        $this->fcmProjects = null;
+        if (method_exists($notification, 'fcmProjects')) {
+            $this->fcmProjects = $notification->fcmProjects($notifiable, $fcmMessage);
+        }
+
         $responses = [];
 
-        try {
-            if (is_array($token)) {
-                // Use multicast when there are multiple recipients
-                $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
-                foreach ($partialTokens as $tokens) {
-                    $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+        $this->fcmProjects = $this->fcmProjects ?? [$this->fcmProject];
+
+        foreach ($this->fcmProjects as $fcmProject) {
+            $this->fcmProject = $fcmProject;
+            try {
+                if (is_array($token)) {
+                    // Use multicast when there are multiple recipients
+                    $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
+                    foreach ($partialTokens as $tokens) {
+                        $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+                    }
+                } else {
+                    $responses[] = $this->sendToFcm($fcmMessage, $token);
                 }
-            } else {
-                $responses[] = $this->sendToFcm($fcmMessage, $token);
+            } catch (MessagingException $exception) {
+                $this->failedNotification($notifiable, $notification, $exception);
+                throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
             }
-        } catch (MessagingException $exception) {
-            $this->failedNotification($notifiable, $notification, $exception);
-            throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
         return $responses;
