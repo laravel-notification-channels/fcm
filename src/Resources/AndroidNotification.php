@@ -630,6 +630,7 @@ class AndroidNotification implements FcmResource
             'title_loc_key' => $this->getTitleLocKey(),
             'title_loc_args' => $this->getTitleLocArgs(),
             'channel_id' => $this->getChannelId(),
+            'android_channel_id' => $this->getChannelId(),
             'ticker' => $this->getTicker(),
             'sticky' => $this->getSticky(),
             'event_time' => $this->getEventTime(),
