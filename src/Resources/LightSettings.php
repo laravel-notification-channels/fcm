@@ -36,7 +36,7 @@ class LightSettings implements FcmResource
     }
 
     /**
-     * @param Color $color
+     * @param  Color  $color
      * @return LightSettings
      */
     public function setColor(Color $color): self
@@ -55,7 +55,7 @@ class LightSettings implements FcmResource
     }
 
     /**
-     * @param string|null $lightOnDuration
+     * @param  string|null  $lightOnDuration
      * @return LightSettings
      */
     public function setLightOnDuration(?string $lightOnDuration): self
@@ -74,7 +74,7 @@ class LightSettings implements FcmResource
     }
 
     /**
-     * @param string|null $lightOffDuration
+     * @param  string|null  $lightOffDuration
      * @return LightSettings
      */
     public function setLightOffDuration(?string $lightOffDuration): self

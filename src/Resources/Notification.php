@@ -28,7 +28,7 @@ class Notification implements FcmResource
     }
 
     /**
-     * @param string|null $title
+     * @param  string|null  $title
      * @return Notification
      */
     public function setTitle(?string $title): self
@@ -47,7 +47,7 @@ class Notification implements FcmResource
     }
 
     /**
-     * @param string|null $body
+     * @param  string|null  $body
      * @return Notification
      */
     public function setBody(?string $body): self
@@ -66,7 +66,7 @@ class Notification implements FcmResource
     }
 
     /**
-     * @param string|null $image
+     * @param  string|null  $image
      * @return Notification
      */
     public function setImage(?string $image): self

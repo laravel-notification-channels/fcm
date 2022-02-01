@@ -26,7 +26,7 @@ class AndroidFcmOptions implements FcmResource
     }
 
     /**
-     * @param string|null $analyticsLabel
+     * @param  string|null  $analyticsLabel
      * @return AndroidFcmOptions
      */
     public function setAnalyticsLabel(?string $analyticsLabel): self

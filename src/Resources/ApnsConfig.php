@@ -36,7 +36,7 @@ class ApnsConfig implements FcmResource
     }
 
     /**
-     * @param array|null $headers
+     * @param  array|null  $headers
      * @return ApnsConfig
      */
     public function setHeaders(?array $headers): self
@@ -55,7 +55,7 @@ class ApnsConfig implements FcmResource
     }
 
     /**
-     * @param array|null $payload
+     * @param  array|null  $payload
      * @return ApnsConfig
      */
     public function setPayload(?array $payload): self
@@ -74,7 +74,7 @@ class ApnsConfig implements FcmResource
     }
 
     /**
-     * @param ApnsFcmOptions $fcmOptions
+     * @param  ApnsFcmOptions  $fcmOptions
      * @return ApnsConfig
      */
     public function setFcmOptions(ApnsFcmOptions $fcmOptions): self
