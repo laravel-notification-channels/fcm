@@ -56,7 +56,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param string|null $collapseKey
+     * @param  string|null  $collapseKey
      * @return AndroidConfig
      */
     public function setCollapseKey(?string $collapseKey): self
@@ -75,7 +75,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param AndroidMessagePriority|null $priority
+     * @param  AndroidMessagePriority|null  $priority
      * @return AndroidConfig
      */
     public function setPriority(?AndroidMessagePriority $priority): self
@@ -94,7 +94,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param string|null $ttl
+     * @param  string|null  $ttl
      * @return AndroidConfig
      */
     public function setTtl(?string $ttl): self
@@ -113,7 +113,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param string|null $restrictedPackageName
+     * @param  string|null  $restrictedPackageName
      * @return AndroidConfig
      */
     public function setRestrictedPackageName(?string $restrictedPackageName): self
@@ -132,7 +132,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param array|null $data
+     * @param  array|null  $data
      * @return AndroidConfig
      */
     public function setData(?array $data): self
@@ -151,7 +151,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param AndroidNotification|null $notification
+     * @param  AndroidNotification|null  $notification
      * @return AndroidConfig
      */
     public function setNotification(?AndroidNotification $notification): self
@@ -170,7 +170,7 @@ class AndroidConfig implements FcmResource
     }
 
     /**
-     * @param AndroidFcmOptions|null $fcmOptions
+     * @param  AndroidFcmOptions|null  $fcmOptions
      * @return AndroidConfig
      */
     public function setFcmOptions(?AndroidFcmOptions $fcmOptions): self

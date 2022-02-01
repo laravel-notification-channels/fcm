@@ -31,7 +31,7 @@ class WebpushFcmOptions implements FcmResource
     }
 
     /**
-     * @param string|null $link
+     * @param  string|null  $link
      * @return WebpushFcmOptions
      */
     public function setLink(?string $link): self
@@ -50,7 +50,7 @@ class WebpushFcmOptions implements FcmResource
     }
 
     /**
-     * @param string|null $analyticsLabel
+     * @param  string|null  $analyticsLabel
      * @return WebpushFcmOptions
      */
     public function setAnalyticsLabel(?string $analyticsLabel): self
