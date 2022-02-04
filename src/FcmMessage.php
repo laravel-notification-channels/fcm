@@ -272,7 +272,7 @@ class FcmMessage implements Message
         ];
     }
 
-    public function jsonSerialize(): mixed
+    public function jsonSerialize()
     {
         return $this->toArray();
     }
