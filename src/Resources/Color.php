@@ -41,7 +41,7 @@ class Color implements FcmResource
     }
 
     /**
-     * @param float|null $red
+     * @param  float|null  $red
      * @return Color
      */
     public function setRed(?float $red): self
@@ -60,7 +60,7 @@ class Color implements FcmResource
     }
 
     /**
-     * @param float|null $green
+     * @param  float|null  $green
      * @return Color
      */
     public function setGreen(?float $green): self
@@ -79,7 +79,7 @@ class Color implements FcmResource
     }
 
     /**
-     * @param float|null $blue
+     * @param  float|null  $blue
      * @return Color
      */
     public function setBlue(?float $blue): self
@@ -98,7 +98,7 @@ class Color implements FcmResource
     }
 
     /**
-     * @param float|null $alpha
+     * @param  float|null  $alpha
      * @return Color
      */
     public function setAlpha(?float $alpha): self

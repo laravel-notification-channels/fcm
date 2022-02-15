@@ -23,7 +23,7 @@ class ApnsFcmOptions implements FcmResource
     }
 
     /**
-     * @param string|null $analyticsLabel
+     * @param  string|null  $analyticsLabel
      * @return ApnsFcmOptions
      */
     public function setAnalyticsLabel(?string $analyticsLabel): self
@@ -42,7 +42,7 @@ class ApnsFcmOptions implements FcmResource
     }
 
     /**
-     * @param string|null $image
+     * @param  string|null  $image
      * @return ApnsFcmOptions
      */
     public function setImage(?string $image): self
