@@ -8,6 +8,7 @@ use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\FcmOptions;
 use NotificationChannels\Fcm\Resources\Notification;
 use NotificationChannels\Fcm\Resources\WebpushConfig;
+use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 
 class FcmMessage implements Message
 {
@@ -96,9 +97,14 @@ class FcmMessage implements Message
     /**
      * @param  array|null  $data
      * @return FcmMessage
+     * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function setData(?array $data): self
     {
+        foreach($data as $key => $item){
+            !is_string($item) ? throw CouldNotSendNotification::invalidPropertyInArray($key) : ''; 
+        }
+
         $this->data = $data;
 
         return $this;
