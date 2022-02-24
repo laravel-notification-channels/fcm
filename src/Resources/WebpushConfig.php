@@ -64,7 +64,7 @@ class WebpushConfig implements FcmResource
     /**
      * @param  array|null  $data
      * @return WebpushConfig
-     * 
+     *
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function setData(?array $data): self

@@ -97,7 +97,7 @@ class FcmMessage implements Message
     /**
      * @param  array|null  $data
      * @return FcmMessage
-     * 
+     *
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function setData(?array $data): self
