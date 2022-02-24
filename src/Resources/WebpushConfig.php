@@ -1,7 +1,9 @@
 <?php
 
 namespace NotificationChannels\Fcm\Resources;
+
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+
 class WebpushConfig implements FcmResource
 {
     /**
@@ -62,14 +64,15 @@ class WebpushConfig implements FcmResource
     /**
      * @param  array|null  $data
      * @return WebpushConfig
+     * 
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function setData(?array $data): self
     {
-        foreach($data as $key => $item){
-            !is_string($item) ? throw CouldNotSendNotification::invalidPropertyInArray($key) : ''; 
+        foreach ($data as $key => $item) {
+            ! is_string($item) ? throw CouldNotSendNotification::invalidPropertyInArray($key) : '';
         }
-        
+
         $this->data = $data;
 
         return $this;

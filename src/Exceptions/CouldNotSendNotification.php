@@ -24,6 +24,6 @@ class CouldNotSendNotification extends Exception
 
     public static function invalidPropertyInArray($key)
     {
-        return new static("The value of ".$key." must be a string");
+        return new static('The value of ' . $key . ' must be a string');
     }
 }
