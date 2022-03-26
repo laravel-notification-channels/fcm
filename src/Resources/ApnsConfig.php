@@ -7,17 +7,17 @@ class ApnsConfig implements FcmResource
     /**
      * @var array|null
      */
-    protected $headers;
+    protected ?array $headers;
 
     /**
      * @var array|null
      */
-    protected $payload;
+    protected ?array $payload;
 
     /**
      * @var ApnsFcmOptions
      */
-    protected $fcmOptions;
+    protected ApnsFcmOptions $fcmOptions;
 
     /**
      * @return static
@@ -92,7 +92,7 @@ class ApnsConfig implements FcmResource
         return [
             'headers' => $this->getHeaders(),
             'payload' => $this->getPayload(),
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'fcm_options' => $this->getFcmOptions()?->toArray(),
         ];
     }
 }

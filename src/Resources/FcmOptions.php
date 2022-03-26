@@ -7,7 +7,7 @@ class FcmOptions implements FcmResource
     /**
      * @var string|null
      */
-    protected $analyticsLabel;
+    protected ?string $analyticsLabel;
 
     /**
      * @return string|null

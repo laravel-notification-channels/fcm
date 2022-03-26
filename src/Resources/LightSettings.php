@@ -7,17 +7,17 @@ class LightSettings implements FcmResource
     /**
      * @var Color
      */
-    protected $color;
+    protected Color $color;
 
     /**
      * @var string|null
      */
-    protected $lightOnDuration;
+    protected ?string $lightOnDuration;
 
     /**
      * @var string|null
      */
-    protected $lightOffDuration;
+    protected ?string $lightOffDuration;
 
     /**
      * @return static
@@ -90,7 +90,7 @@ class LightSettings implements FcmResource
     public function toArray(): array
     {
         return [
-            'color' => ! is_null($this->getColor()) ? $this->getColor()->toArray() : null,
+            'color' => $this->getColor()->toArray(),
             'light_on_duration' => $this->getLightOnDuration(),
             'light_off_duration' => $this->getLightOffDuration(),
         ];

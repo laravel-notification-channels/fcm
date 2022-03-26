@@ -2,132 +2,135 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
+use NotificationChannels\Fcm\Enums\Visibility;
+use NotificationChannels\Fcm\Enums\NotificationPriority;
+
 class AndroidNotification implements FcmResource
 {
     /**
      * @var string|null
      */
-    protected $title;
+    protected ?string $title;
 
     /**
      * @var string|null
      */
-    protected $body;
+    protected ?string $body;
 
     /**
      * @var string|null
      */
-    protected $icon;
+    protected ?string $icon;
 
     /**
      * @var string|null
      */
-    protected $color;
+    protected ?string $color;
 
     /**
      * @var string|null
      */
-    protected $sound;
+    protected ?string $sound;
 
     /**
      * @var string|null
      */
-    protected $tag;
+    protected ?string $tag;
 
     /**
      * @var string|null
      */
-    protected $clickAction;
+    protected ?string $clickAction;
 
     /**
      * @var string|null
      */
-    protected $bodyLocKey;
+    protected ?string $bodyLocKey;
 
     /**
      * @var string[]|null
      */
-    protected $bodyLocArgs;
+    protected ?array $bodyLocArgs;
 
     /**
      * @var string|null
      */
-    protected $titleLocKey;
+    protected ?string $titleLocKey;
 
     /**
      * @var string[]|null
      */
-    protected $titleLocArgs;
+    protected ?array $titleLocArgs;
 
     /**
      * @var string|null
      */
-    protected $channelId;
+    protected ?string $channelId;
 
     /**
      * @var string|null
      */
-    protected $ticker;
+    protected ?string $ticker;
 
     /**
      * @var bool|null
      */
-    protected $sticky;
+    protected ?bool $sticky;
 
     /**
      * @var string|null
      */
-    protected $eventTime;
+    protected ?string $eventTime;
 
     /**
      * @var bool|null
      */
-    protected $localOnly;
+    protected ?bool $localOnly;
 
     /**
      * @var NotificationPriority|null
      */
-    protected $notificationPriority;
+    protected ?NotificationPriority $notificationPriority;
 
     /**
      * @var bool|null
      */
-    protected $defaultSound;
+    protected ?bool $defaultSound;
 
     /**
      * @var bool|null
      */
-    protected $defaultVibrateTimings;
+    protected ?bool $defaultVibrateTimings;
 
     /**
      * @var bool|null
      */
-    protected $defaultLightSettings;
+    protected ?bool $defaultLightSettings;
 
     /**
      * @var string[]|null
      */
-    protected $vibrateTimings;
+    protected ?array $vibrateTimings;
 
     /**
      * @var Visibility|null
      */
-    protected $visibility;
+    protected ?Visibility $visibility;
 
     /**
      * @var int|null
      */
-    protected $notificationCount;
+    protected ?int $notificationCount;
 
     /**
      * @var LightSettings|null
      */
-    protected $lightSettings;
+    protected ?LightSettings $lightSettings;
 
     /**
      * @var string|null
      */
-    protected $image;
+    protected ?string $image;
 
     /**
      * @return static
@@ -634,12 +637,12 @@ class AndroidNotification implements FcmResource
             'sticky' => $this->getSticky(),
             'event_time' => $this->getEventTime(),
             'local_only' => $this->getLocalOnly(),
-            'notification_priority' => ! is_null($this->getNotificationPriority()) ? $this->getNotificationPriority()->label ?? $this->getNotificationPriority()->getValue() : null,
+            'notification_priority' =>$this->getNotificationPriority()?->name,
             'default_sound' => $this->getDefaultSound(),
             'default_vibrate_timings' => $this->getDefaultVibrateTimings(),
             'default_light_settings' => $this->getDefaultLightSettings(),
             'vibrate_timings' => $this->getVibrateTimings(),
-            'visibility' => ! is_null($this->getVisibility()) ? $this->getVisibility()->label ?? $this->getVisibility()->getValue() : null,
+            'visibility' => $this->getVisibility()?->name,
             'notification_count' => $this->getNotificationCount(),
             //'light_setings' => ! is_null($this->getLightSettings()) ? $this->getLightSettings()->toArray() : null,
             'image' => $this->getImage(),

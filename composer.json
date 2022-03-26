@@ -1,7 +1,7 @@
 {
-    "name": "laravel-notification-channels/fcm",
+    "name": "abdullahfaqeir/fcm",
     "description": "FCM (Firebase Cloud Messaging) Notifications Driver for Laravel",
-    "homepage": "https://github.com/laravel-notification-channels/fcm",
+    "homepage": "https://github.com/AbdullahFaqeir/fcm",
     "license": "MIT",
     "authors": [
         {
@@ -9,19 +9,24 @@
             "email": "chris.bautista@coreproc.ph",
             "homepage": "https://coreproc.com",
             "role": "Developer"
+        },
+        {
+            "name": "Abdullah Al-Faqeir",
+            "email": "abdullah@devloops.net",
+            "homepage": "https://devloops.net",
+            "role": "Developer"
         }
     ],
     "require": {
-        "php": ">=7.1.3",
-        "guzzlehttp/guzzle": "^6.2 || ^7.0",
-        "illuminate/notifications": "~5.6 || ~6.0 || ~7.0 || ~8.0 || ~9.0",
-        "illuminate/support": "~5.6 || ~6.0 || ~7.0 || ~8.0 || ~9.0",
-        "kreait/laravel-firebase": "^1.3 || ^2.1 || ^3.0 || ^4.0",
-        "spatie/enum": "^2.3 || ^3.0"
+        "php": "^8.1",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "illuminate/notifications": "~8.0 || ~9.0",
+        "illuminate/support": "~8.0 || ~9.0",
+        "kreait/laravel-firebase": "^4.0"
     },
     "require-dev": {
         "mockery/mockery": "^0.9.5",
-        "phpunit/phpunit": "8.*"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {

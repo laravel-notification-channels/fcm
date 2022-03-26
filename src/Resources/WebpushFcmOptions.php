@@ -7,12 +7,12 @@ class WebpushFcmOptions implements FcmResource
     /**
      * @var string|null
      */
-    protected $link;
+    protected ?string $link;
 
     /**
      * @var string|null
      */
-    protected $analyticsLabel;
+    protected ?string $analyticsLabel;
 
     /**
      * @return static
@@ -31,7 +31,8 @@ class WebpushFcmOptions implements FcmResource
     }
 
     /**
-     * @param  string|null  $link
+     * @param string|null $link
+     *
      * @return WebpushFcmOptions
      */
     public function setLink(?string $link): self
@@ -50,7 +51,8 @@ class WebpushFcmOptions implements FcmResource
     }
 
     /**
-     * @param  string|null  $analyticsLabel
+     * @param string|null $analyticsLabel
+     *
      * @return WebpushFcmOptions
      */
     public function setAnalyticsLabel(?string $analyticsLabel): self
@@ -66,7 +68,7 @@ class WebpushFcmOptions implements FcmResource
     public function toArray(): array
     {
         return [
-            'link' => $this->getLink(),
+            'link'            => $this->getLink(),
             'analytics_label' => $this->getAnalyticsLabel(),
         ];
     }

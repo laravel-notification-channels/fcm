@@ -7,22 +7,22 @@ class Color implements FcmResource
     /**
      * @var float|null
      */
-    protected $red;
+    protected ?float $red;
 
     /**
      * @var float|null
      */
-    protected $green;
+    protected ?float $green;
 
     /**
      * @var float|null
      */
-    protected $blue;
+    protected ?float $blue;
 
     /**
      * @var float|null
      */
-    protected $alpha;
+    protected ?float $alpha;
 
     /**
      * @return static

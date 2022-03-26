@@ -7,22 +7,22 @@ class WebpushConfig implements FcmResource
     /**
      * @var array|null
      */
-    protected $headers;
+    protected ?array $headers;
 
     /**
      * @var array|null
      */
-    protected $data;
+    protected ?array $data;
 
     /**
      * @var array|null
      */
-    protected $notification;
+    protected ?array $notification;
 
     /**
      * @var WebpushFcmOptions|null
      */
-    protected $fcmOptions;
+    protected ?WebpushFcmOptions $fcmOptions;
 
     /**
      * @return static
@@ -117,7 +117,7 @@ class WebpushConfig implements FcmResource
             'headers' => $this->getHeaders(),
             'data' => $this->getData(),
             'notification' => $this->getNotification(),
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'fcm_options' => $this->getFcmOptions()?->toArray(),
         ];
     }
 }

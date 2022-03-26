@@ -14,52 +14,52 @@ class FcmMessage implements Message
     /**
      * @var string|null
      */
-    protected $name;
+    protected ?string $name;
 
     /**
      * @var array|null
      */
-    protected $data;
+    protected ?array $data;
 
     /**
      * @var Notification|null
      */
-    protected $notification;
+    protected ?Notification $notification;
 
     /**
      * @var AndroidConfig|null
      */
-    protected $android;
+    protected ?AndroidConfig $android;
 
     /**
      * @var WebpushConfig|null
      */
-    protected $webpush;
+    protected ?WebpushConfig $webpush;
 
     /**
      * @var ApnsConfig|null
      */
-    protected $apns;
+    protected ?ApnsConfig $apns;
 
     /**
      * @var FcmOptions|null
      */
-    protected $fcmOptions;
+    protected ?FcmOptions $fcmOptions;
 
     /**
      * @var string|null
      */
-    protected $token;
+    protected ?string $token;
 
     /**
      * @var string|null
      */
-    protected $topic;
+    protected ?string $topic;
 
     /**
      * @var string|null
      */
-    protected $condition;
+    protected ?string $condition;
 
     public static function create(): self
     {
@@ -256,16 +256,16 @@ class FcmMessage implements Message
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'name' => $this->getName(),
             'data' => $this->getData(),
-            'notification' => ! is_null($this->getNotification()) ? $this->getNotification()->toArray() : null,
-            'android' => ! is_null($this->getAndroid()) ? $this->getAndroid()->toArray() : null,
-            'webpush' => ! is_null($this->getWebpush()) ? $this->getWebpush()->toArray() : null,
-            'apns' => ! is_null($this->getApns()) ? $this->getApns()->toArray() : null,
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'notification' => $this->getNotification()?->toArray(),
+            'android' => $this->getAndroid()?->toArray(),
+            'webpush' =>$this->getWebpush()?->toArray(),
+            'apns' => $this->getApns()?->toArray(),
+            'fcm_options' => $this->getFcmOptions()?->toArray(),
             'token' => $this->getToken(),
             'topic' => $this->getTopic(),
             'condition' => $this->getCondition(),
@@ -273,10 +273,10 @@ class FcmMessage implements Message
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     #[\ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

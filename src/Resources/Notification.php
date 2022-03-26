@@ -7,17 +7,17 @@ class Notification implements FcmResource
     /**
      * @var string|null
      */
-    protected $title;
+    protected ?string $title;
 
     /**
      * @var string|null
      */
-    protected $body;
+    protected ?string $body;
 
     /**
      * @var string|null
      */
-    protected $image;
+    protected ?string $image;
 
     /**
      * @return string|null

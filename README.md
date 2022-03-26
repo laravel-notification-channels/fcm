@@ -1,12 +1,21 @@
 # Laravel FCM (Firebase Cloud Messaging) Notification Channel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-fcm)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/abdullahfaqeir/fcm.svg?style=flat-square)](https://packagist.org/packages/coreproc/laravel-notification-channel-fcm)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![StyleCI](https://styleci.io/repos/209406724/shield)](https://styleci.io/repos/209406724)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/fcm.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/fcm)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/fcm)
+[![Quality Score](https://img.shields.io/scrutinizer/g/abdullahfaqeir/fcm.svg?style=flat-square)](https://scrutinizer-ci.com/g/abdullahfaqeir/fcm)
+[![Total Downloads](https://img.shields.io/packagist/dt/abdullahfaqeir/fcm.svg?style=flat-square)](https://packagist.org/packages/abdullahfaqeir/fcm)
 
-This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel 5.5+, 6.x, 7.x and 8.x.
+This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel 8.x and 9.x.
+
+## Disclaimer
+
+This repo is a fork from the [original repo](https://github.com/laravel-notification-channels/fcm) but with updated to version 3, check notes below. 
+
+## Version 3 Released (March 26, 2022)
+
+V3.0.0 has been released with the support of laravel 9 and dropping the support below laravel 8
+now the minimum php version is 8.1, as the packages uses php native enums.
 
 ## Version 2 Released (March 4, 2020)
 
@@ -33,7 +42,7 @@ v1.x should not upgrade to v2.x of this package unless you plan on migrating you
 Install this package with Composer:
 
 ```bash
-composer require laravel-notification-channels/fcm:~2.0
+composer require abdullahfaqeir/fcm:~3.0
 ```
 
 ### Setting up the FCM service
@@ -205,6 +214,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 ## Credits
 
 - [Chris Bautista](https://github.com/chrisbjr)
+- [Abdullah Al-Faqeir](https://github.com/abdullahfaqeir)
 - [All Contributors](../../contributors)
 
 ## License

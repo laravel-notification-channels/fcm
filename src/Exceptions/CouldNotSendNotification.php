@@ -8,17 +8,13 @@ use Kreait\Firebase\Messaging\Message;
 
 class CouldNotSendNotification extends Exception
 {
-    public static function serviceRespondedWithAnError(MessagingException $exception)
+    public static function serviceRespondedWithAnError(MessagingException $exception): static
     {
-        return new static(
-            $exception->getMessage(),
-            $exception->getCode(),
-            $exception
-        );
+        return new static($exception->getMessage(), $exception->getCode(), $exception);
     }
 
-    public static function invalidMessage()
+    public static function invalidMessage(): CouldNotSendNotification
     {
-        return new static('The toFcm() method only accepts instances of ' . Message::class);
+        return new static('The toFcm() method only accepts instances of '.Message::class);
     }
 }

@@ -7,7 +7,7 @@ class AndroidFcmOptions implements FcmResource
     /**
      * @var string|null
      */
-    protected $analyticsLabel;
+    protected ?string $analyticsLabel;
 
     /**
      * @return static

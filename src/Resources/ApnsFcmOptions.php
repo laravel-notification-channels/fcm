@@ -7,12 +7,12 @@ class ApnsFcmOptions implements FcmResource
     /**
      * @var string|null
      */
-    protected $analyticsLabel;
+    protected ?string $analyticsLabel;
 
     /**
      * @var string|null
      */
-    protected $image;
+    protected ?string $image;
 
     /**
      * @return string|null

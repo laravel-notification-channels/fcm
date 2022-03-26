@@ -2,42 +2,44 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
+use NotificationChannels\Fcm\Enums\AndroidMessagePriority;
+
 class AndroidConfig implements FcmResource
 {
     /**
      * @var string|null
      */
-    protected $collapseKey;
+    protected ?string $collapseKey;
 
     /**
      * @var AndroidMessagePriority|null
      */
-    protected $priority;
+    protected ?AndroidMessagePriority $priority;
 
     /**
      * @var string|null
      */
-    protected $ttl;
+    protected ?string $ttl;
 
     /**
      * @var string|null
      */
-    protected $restrictedPackageName;
+    protected ?string $restrictedPackageName;
 
     /**
      * @var array|null
      */
-    protected $data;
+    protected ?array $data;
 
     /**
      * @var AndroidNotification|null
      */
-    protected $notification;
+    protected ?AndroidNotification $notification;
 
     /**
      * @var AndroidFcmOptions|null
      */
-    protected $fcmOptions;
+    protected ?AndroidFcmOptions $fcmOptions;
 
     /**
      * @return static
@@ -187,12 +189,12 @@ class AndroidConfig implements FcmResource
     {
         return [
             'collapse_key' => $this->getCollapseKey(),
-            'priority' => ! is_null($this->getPriority()) ? $this->getPriority()->label ?? $this->getPriority()->getValue() : null,
+            'priority' =>$this->getPriority()?->name,
             'ttl' => $this->getTtl(),
             'restricted_package_name' => $this->getRestrictedPackageName(),
             'data' => $this->getData(),
-            'notification' => ! is_null($this->getNotification()) ? $this->getNotification()->toArray() : null,
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'notification' => $this->getNotification()?->toArray(),
+            'fcm_options' => $this->getFcmOptions()?->toArray(),
         ];
     }
 }
