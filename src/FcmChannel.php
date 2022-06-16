@@ -25,7 +25,7 @@ class FcmChannel
     /**
      * FcmChannel constructor.
      *
-     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
      */
     public function __construct(Dispatcher $dispatcher)
     {
@@ -40,10 +40,10 @@ class FcmChannel
     /**
      * Send the given notification.
      *
-     * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
-     *
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Notification  $notification
      * @return array
+     *
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
@@ -104,9 +104,10 @@ class FcmChannel
     }
 
     /**
-     * @param \Kreait\Firebase\Messaging\Message $fcmMessage
+     * @param  \Kreait\Firebase\Messaging\Message  $fcmMessage
      * @param $token
      * @return array
+     *
      * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
@@ -125,8 +126,9 @@ class FcmChannel
 
     /**
      * @param $fcmMessage
-     * @param array $tokens
+     * @param  array  $tokens
      * @return \Kreait\Firebase\Messaging\MulticastSendReport
+     *
      * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
@@ -138,9 +140,9 @@ class FcmChannel
     /**
      * Dispatch failed event.
      *
-     * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
-     * @param \Throwable $exception
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  \Throwable  $exception
      * @return array|null
      */
     protected function failedNotification($notifiable, Notification $notification, Throwable $exception)

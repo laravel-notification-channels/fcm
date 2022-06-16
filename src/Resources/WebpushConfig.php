@@ -41,7 +41,7 @@ class WebpushConfig implements FcmResource
     }
 
     /**
-     * @param array|null $headers
+     * @param  array|null  $headers
      * @return WebpushConfig
      */
     public function setHeaders(?array $headers): self
@@ -60,7 +60,7 @@ class WebpushConfig implements FcmResource
     }
 
     /**
-     * @param array|null $data
+     * @param  array|null  $data
      * @return WebpushConfig
      */
     public function setData(?array $data): self
@@ -79,7 +79,7 @@ class WebpushConfig implements FcmResource
     }
 
     /**
-     * @param array|null $notification
+     * @param  array|null  $notification
      * @return WebpushConfig
      */
     public function setNotification(?array $notification): self
@@ -98,7 +98,7 @@ class WebpushConfig implements FcmResource
     }
 
     /**
-     * @param WebpushFcmOptions|null $fcmOptions
+     * @param  WebpushFcmOptions|null  $fcmOptions
      * @return WebpushConfig
      */
     public function setFcmOptions(?WebpushFcmOptions $fcmOptions): self
