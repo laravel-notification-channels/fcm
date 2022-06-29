@@ -267,7 +267,7 @@ class FcmMessage implements Message
             'apns' => ! is_null($this->getApns()) ? $this->getApns()->toArray() : null,
             'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
         ];
-        
+
         if ($token = $this->getToken()) {
             $data['token'] = $token;
         }
