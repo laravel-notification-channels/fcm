@@ -94,7 +94,7 @@ class FcmMessage implements Message
     }
 
     /**
-     * @param  array|null  $data
+     * @param  array<string, string>|null  $data
      * @return FcmMessage
      */
     public function setData(?array $data): self
