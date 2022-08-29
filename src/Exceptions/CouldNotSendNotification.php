@@ -21,4 +21,9 @@ class CouldNotSendNotification extends Exception
     {
         return new static('The toFcm() method only accepts instances of ' . Message::class);
     }
+
+    public static function invalidPropertyInArray($key)
+    {
+        return new static('The value of ' . $key . ' must be a string');
+    }
 }
