@@ -70,7 +70,9 @@ class WebpushConfig implements FcmResource
     public function setData(?array $data): self
     {
         foreach ($data as $key => $item) {
-            ! is_string($item) ? throw CouldNotSendNotification::invalidPropertyInArray($key) : '';
+            if (!is_string($item)) {
+                throw CouldNotSendNotification::invalidPropertyInArray($key);
+            }
         }
 
         $this->data = $data;
@@ -125,7 +127,7 @@ class WebpushConfig implements FcmResource
             'headers' => $this->getHeaders(),
             'data' => $this->getData(),
             'notification' => $this->getNotification(),
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'fcm_options' => !is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
         ];
     }
 }
