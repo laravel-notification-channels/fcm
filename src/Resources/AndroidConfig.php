@@ -142,7 +142,7 @@ class AndroidConfig implements FcmResource
     public function setData(?array $data): self
     {
         foreach ($data as $key => $item) {
-            if (!is_string($item)) {
+            if (! is_string($item)) {
                 throw CouldNotSendNotification::invalidPropertyInArray($key);
             }
         }
@@ -197,12 +197,12 @@ class AndroidConfig implements FcmResource
     {
         return [
             'collapse_key' => $this->getCollapseKey(),
-            'priority' => !is_null($this->getPriority()) ? $this->getPriority()->label ?? $this->getPriority()->getValue() : null,
+            'priority' => ! is_null($this->getPriority()) ? $this->getPriority()->label ?? $this->getPriority()->getValue() : null,
             'ttl' => $this->getTtl(),
             'restricted_package_name' => $this->getRestrictedPackageName(),
             'data' => $this->getData(),
-            'notification' => !is_null($this->getNotification()) ? $this->getNotification()->toArray() : null,
-            'fcm_options' => !is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
+            'notification' => ! is_null($this->getNotification()) ? $this->getNotification()->toArray() : null,
+            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
         ];
     }
 }
