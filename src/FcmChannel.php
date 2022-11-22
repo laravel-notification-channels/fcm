@@ -80,7 +80,7 @@ class FcmChannel
                 $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
         } catch (MessagingException $exception) {
-            $this->failedNotification($notifiable, $notification, $exception);
+            $this->failedNotification($notifiable, $notification, $exception, $token);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
@@ -143,9 +143,10 @@ class FcmChannel
      * @param  mixed  $notifiable
      * @param  \Illuminate\Notifications\Notification  $notification
      * @param  \Throwable  $exception
+     * @param  string|array  $token
      * @return array|null
      */
-    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    protected function failedNotification($notifiable, Notification $notification, Throwable $exception, $token)
     {
         return $this->events->dispatch(new NotificationFailed(
             $notifiable,
@@ -154,6 +155,7 @@ class FcmChannel
             [
                 'message' => $exception->getMessage(),
                 'exception' => $exception,
+                'token' => $token,
             ]
         ));
     }
