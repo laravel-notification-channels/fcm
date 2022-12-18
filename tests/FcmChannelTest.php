@@ -2,8 +2,8 @@
 
 namespace NotificationChannels\Fcm\Test;
 
-use Mockery;
 use Illuminate\Contracts\Events\Dispatcher;
+use Mockery;
 use NotificationChannels\Fcm\FcmChannel;
 use PHPUnit\Framework\TestCase;
 
