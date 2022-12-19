@@ -2,7 +2,7 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
-class Visibility extends Enum
+enum Visibility
 {
     case VISIBILITY_UNSPECIFIED;
     case PRIVATE;
