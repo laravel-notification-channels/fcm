@@ -634,14 +634,14 @@ class AndroidNotification implements FcmResource
             'sticky' => $this->getSticky(),
             'event_time' => $this->getEventTime(),
             'local_only' => $this->getLocalOnly(),
-            'notification_priority' => ! is_null($this->getNotificationPriority()) ? $this->getNotificationPriority()->label ?? $this->getNotificationPriority()->getValue() : null,
+            'notification_priority' => $this->getNotificationPriority()?->name,
             'default_sound' => $this->getDefaultSound(),
             'default_vibrate_timings' => $this->getDefaultVibrateTimings(),
             'default_light_settings' => $this->getDefaultLightSettings(),
             'vibrate_timings' => $this->getVibrateTimings(),
-            'visibility' => ! is_null($this->getVisibility()) ? $this->getVisibility()->label ?? $this->getVisibility()->getValue() : null,
+            'visibility' => $this->getVisibility()?->name,
             'notification_count' => $this->getNotificationCount(),
-            //'light_setings' => ! is_null($this->getLightSettings()) ? $this->getLightSettings()->toArray() : null,
+            // 'light_setings' => ! is_null($this->getLightSettings()) ? $this->getLightSettings()->toArray() : null,
             'image' => $this->getImage(),
         ];
     }
