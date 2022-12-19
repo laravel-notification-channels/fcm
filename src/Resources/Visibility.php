@@ -4,8 +4,8 @@ namespace NotificationChannels\Fcm\Resources;
 
 enum Visibility
 {
-    case VISIBILITY_UNSPECIFIED;
-    case PRIVATE;
-    case PUBLIC;
-    case SECRET;
+    case IS_UNSPECIFIED;
+    case IS_PRIVATE;
+    case IS_PUBLIC;
+    case IS_SECRET;
 }
