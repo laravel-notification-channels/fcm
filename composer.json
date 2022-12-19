@@ -19,8 +19,8 @@
         "kreait/laravel-firebase": "^4.0"
     },
     "require-dev": {
-        "mockery/mockery": "^1.5",
-        "phpunit/phpunit": "^9.5"
+        "mockery/mockery": "^1.5.1",
+        "phpunit/phpunit": "^9.5.27"
     },
     "autoload": {
         "psr-4": {
