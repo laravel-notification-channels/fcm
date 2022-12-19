@@ -639,7 +639,7 @@ class AndroidNotification implements FcmResource
             'default_vibrate_timings' => $this->getDefaultVibrateTimings(),
             'default_light_settings' => $this->getDefaultLightSettings(),
             'vibrate_timings' => $this->getVibrateTimings(),
-            'visibility' => $this->getVisibility()?->name,
+            'visibility' => $this->getVisibility()?->value,
             'notification_count' => $this->getNotificationCount(),
             // 'light_setings' => ! is_null($this->getLightSettings()) ? $this->getLightSettings()->toArray() : null,
             'image' => $this->getImage(),
