@@ -20,8 +20,8 @@
         "spatie/enum": "^2.3 || ^3.0"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9.5|^1.4.4",
-        "phpunit/phpunit": "8.*|^9.5.10"
+        "mockery/mockery": "^1.5.1",
+        "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
         "psr-4": {
