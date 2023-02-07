@@ -197,7 +197,7 @@ class AndroidConfig implements FcmResource
     {
         return [
             'collapse_key' => $this->getCollapseKey(),
-            'priority' => ! is_null($this->getPriority()) ? $this->getPriority()->label ?? $this->getPriority()->getValue() : null,
+            'priority' => $this->getPriority()?->name,
             'ttl' => $this->getTtl(),
             'restricted_package_name' => $this->getRestrictedPackageName(),
             'data' => $this->getData(),
