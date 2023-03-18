@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 class FcmChannelTest extends TestCase
 {
     /** @test */
-    public function true_is_true()
+    public function it_can_be_instantiated()
     {
         $events = Mockery::mock(Dispatcher::class);
 
