@@ -26,4 +26,14 @@ class CouldNotSendNotification extends Exception
     {
         return new static('The value of ' . $key . ' must be a string');
     }
+
+    public static function invalidTokenValue()
+    {
+        return new static('The value of topic route must be a string and not empty');
+    }
+
+    public static function invalidMessageTarget($notifiable)
+    {
+        return new static($notifiable::class . ' notifiable has an invalid value of routeNotificationAs method');
+    }
 }

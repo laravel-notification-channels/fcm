@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use ReflectionException;
@@ -45,6 +46,23 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
+        // Defaults to token for now as existing notifiable model does not have this method. This is to avoid breaking of push notification.
+        // Will remove this once they are converted.
+        $as = $notifiable->routeNotificationAs() ?? 'token';
+
+        if ($as === MessageTarget::TOKEN) {
+            return $this->sendToToken($notifiable, $notification);
+        }
+
+        if ($as === MessageTarget::TOPIC) {
+            return $this->sendToTopic($notifiable, $notification);
+        }
+
+        throw CouldNotSendNotification::invalidMessageTarget($notifiable);
+    }
+    
+    protected function sendToToken($notifiable, Notification $notification)
+    {
         $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
         if (empty($tokens)) {
@@ -67,12 +85,12 @@ class FcmChannel
 
         try {
             if (count($tokens) === 1) {
-                $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
+                $responses[] = $this->sendToFcmToken($fcmMessage, $tokens[0]);
             } else {
                 $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
 
                 foreach ($partialTokens as $tokens) {
-                    $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+                    $responses[] = $this->sendToFcmTokenMulticast($fcmMessage, $tokens);
                 }
             }
         } catch (MessagingException $exception) {
@@ -81,6 +99,25 @@ class FcmChannel
         }
 
         return $responses;
+    }
+
+    protected function sendToTopic($notifiable, Notification $notification)
+    {
+        $topic = $notifiable->routeNotificationForTopic();
+
+        if (! is_string($topic) || empty($topic)) {
+            throw CouldNotSendNotification::invalidTokenValue();
+        }
+
+        // Get the message from the notification class
+        $fcmMessage = $notification->toFcm($notifiable);
+
+        try {
+            $this->sendToFcmTopic($fcmMessage, $topic);
+        } catch (MessagingException $exception) {
+            $this->failedNotification($notifiable, $notification, $exception, $tokens);
+            throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
+        }
     }
 
     /**
@@ -107,7 +144,7 @@ class FcmChannel
      * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
-    protected function sendToFcm(Message $fcmMessage, $token)
+    protected function sendToFcmToken(Message $fcmMessage, $token)
     {
         if ($fcmMessage instanceof CloudMessage) {
             $fcmMessage = $fcmMessage->withChangedTarget('token', $token);
@@ -128,11 +165,31 @@ class FcmChannel
      * @throws \Kreait\Firebase\Exception\MessagingException
      * @throws \Kreait\Firebase\Exception\FirebaseException
      */
-    protected function sendToFcmMulticast($fcmMessage, array $tokens)
+    protected function sendToFcmTokenMulticast($fcmMessage, array $tokens)
     {
         return $this->messaging()->sendMulticast($fcmMessage, $tokens);
     }
 
+    /**
+     * @param $fcmMessage
+     * @param  string  $topic
+     * @return \Kreait\Firebase\Messaging\MulticastSendReport
+     *
+     * @throws \Kreait\Firebase\Exception\MessagingException
+     * @throws \Kreait\Firebase\Exception\FirebaseException
+     */
+    protected function sendToFcmTopic(Message $fcmMessage, $topic)
+    {
+        if ($fcmMessage instanceof CloudMessage) {
+            $fcmMessage = $fcmMessage->withChangedTarget('topic', $topic);
+        }
+
+        if ($fcmMessage instanceof FcmMessage) {
+            $fcmMessage->setTopic($topic);
+        }
+        
+        return $this->messaging()->send($fcmMessage);
+    }
     /**
      * Dispatch failed event.
      *
