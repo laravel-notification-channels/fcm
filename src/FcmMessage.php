@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Fcm;
 
+use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
@@ -12,6 +13,8 @@ use NotificationChannels\Fcm\Resources\WebpushConfig;
 
 class FcmMessage implements Message
 {
+    use Macroable;
+
     /**
      * @var string|null
      */
