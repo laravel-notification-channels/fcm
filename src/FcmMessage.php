@@ -14,7 +14,7 @@ use NotificationChannels\Fcm\Resources\WebpushConfig;
 class FcmMessage implements Message
 {
     use Macroable;
-    
+
     /**
      * @var string|null
      */
