@@ -10,6 +10,8 @@ use Illuminate\Support\Arr;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
+use Kreait\Firebase\Messaging\MulticastSendReport;
+use Kreait\Firebase\Messaging\SendReport;
 use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
 use ReflectionException;
 use Throwable;
@@ -21,7 +23,7 @@ class FcmChannel
     /**
      * FcmChannel constructor.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @param \Illuminate\Contracts\Events\Dispatcher $events
      */
     public function __construct(protected Dispatcher $events)
     {
@@ -36,8 +38,8 @@ class FcmChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
      * @return array
      *
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
@@ -54,7 +56,7 @@ class FcmChannel
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
 
-        if (! $fcmMessage instanceof Message) {
+        if (!$fcmMessage instanceof Message) {
             throw CouldNotSendNotification::invalidMessage();
         }
 
@@ -66,15 +68,20 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (count($tokens) === 1) {
-                $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
-            } else {
-                $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+            $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
 
-                foreach ($partialTokens as $tokens) {
-                    $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+            foreach ($partialTokens as $tokens) {
+                $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+            }
+
+            /** @var MulticastSendReport $failedMulticastSendReport */
+            foreach (array_filter($responses, fn(MulticastSendReport $report) => $report->hasFailures()) as $failedMulticastSendReport) {
+                /** @var SendReport $failedSendReport */
+                foreach (array_filter($failedMulticastSendReport->getItems(), fn(SendReport $sendReport) => $sendReport->isFailure()) as $failedSendReport) {
+                    $this->failedNotification($notifiable, $notification, $failedSendReport->error(), $failedSendReport->target()->value());
                 }
             }
+
         } catch (MessagingException $exception) {
             $this->failedNotification($notifiable, $notification, $exception, $tokens);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
@@ -100,7 +107,7 @@ class FcmChannel
     }
 
     /**
-     * @param  \Kreait\Firebase\Messaging\Message  $fcmMessage
+     * @param \Kreait\Firebase\Messaging\Message $fcmMessage
      * @param $token
      * @return array
      *
@@ -122,7 +129,7 @@ class FcmChannel
 
     /**
      * @param $fcmMessage
-     * @param  array  $tokens
+     * @param array $tokens
      * @return \Kreait\Firebase\Messaging\MulticastSendReport
      *
      * @throws \Kreait\Firebase\Exception\MessagingException
@@ -136,10 +143,10 @@ class FcmChannel
     /**
      * Dispatch failed event.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @param  \Throwable  $exception
-     * @param  string|array  $token
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
+     * @param \Throwable $exception
+     * @param string|array $token
      * @return array|null
      */
     protected function failedNotification($notifiable, Notification $notification, Throwable $exception, $token)
