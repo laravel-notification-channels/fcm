@@ -80,7 +80,7 @@ class FcmMessage implements Message
 
     /**
      * @param  string|null  $name
-     * @return FcmMessage
+     * @return $this
      */
     public function setName(?string $name): self
     {
@@ -99,7 +99,7 @@ class FcmMessage implements Message
 
     /**
      * @param  array<string, string>|null  $data
-     * @return FcmMessage
+     * @return $this
      *
      * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
@@ -126,7 +126,7 @@ class FcmMessage implements Message
 
     /**
      * @param  Notification|null  $notification
-     * @return FcmMessage
+     * @return $this
      */
     public function setNotification(?Notification $notification): self
     {
@@ -145,7 +145,7 @@ class FcmMessage implements Message
 
     /**
      * @param  AndroidConfig|null  $android
-     * @return FcmMessage
+     * @return $this
      */
     public function setAndroid(?AndroidConfig $android): self
     {
@@ -164,7 +164,7 @@ class FcmMessage implements Message
 
     /**
      * @param  WebpushConfig|null  $webpush
-     * @return FcmMessage
+     * @return $this
      */
     public function setWebpush(?WebpushConfig $webpush): self
     {
@@ -183,7 +183,7 @@ class FcmMessage implements Message
 
     /**
      * @param  ApnsConfig|null  $apns
-     * @return FcmMessage
+     * @return $this
      */
     public function setApns(?ApnsConfig $apns): self
     {
@@ -202,7 +202,7 @@ class FcmMessage implements Message
 
     /**
      * @param  FcmOptions|null  $fcmOptions
-     * @return FcmMessage
+     * @return $this
      */
     public function setFcmOptions(?FcmOptions $fcmOptions): self
     {
@@ -221,7 +221,7 @@ class FcmMessage implements Message
 
     /**
      * @param  string|null  $token
-     * @return FcmMessage
+     * @return $this
      */
     public function setToken(?string $token): self
     {
@@ -240,7 +240,7 @@ class FcmMessage implements Message
 
     /**
      * @param  string|null  $topic
-     * @return FcmMessage
+     * @return $this
      */
     public function setTopic(?string $topic): self
     {
@@ -259,7 +259,7 @@ class FcmMessage implements Message
 
     /**
      * @param  string|null  $condition
-     * @return FcmMessage
+     * @return $this
      */
     public function setCondition(?string $condition): self
     {
