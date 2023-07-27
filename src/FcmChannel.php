@@ -34,6 +34,11 @@ class FcmChannel
     protected $fcmProject = null;
 
     /**
+     * @var array|null
+     */
+    protected $fcmProjects = null;
+
+    /**
      * Send the given notification.
      *
      * @param  mixed  $notifiable
@@ -63,21 +68,31 @@ class FcmChannel
             $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
         }
 
+        $this->fcmProjects = null;
+        if (method_exists($notification, 'fcmProjects')) {
+            $this->fcmProjects = $notification->fcmProjects($notifiable, $fcmMessage);
+        }
+
         $responses = [];
 
-        try {
-            if (count($tokens) === 1) {
-                $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
-            } else {
-                $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+        $this->fcmProjects = $this->fcmProjects ?? [$this->fcmProject];
 
-                foreach ($partialTokens as $tokens) {
-                    $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+        foreach ($this->fcmProjects as $fcmProject) {
+            $this->fcmProject = $fcmProject;
+            try {
+                if (count($tokens) === 1) {
+                    $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
+                } else {
+                    $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+
+                    foreach ($partialTokens as $tokens) {
+                        $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
+                    }
                 }
+            } catch (MessagingException $exception) {
+                $this->failedNotification($notifiable, $notification, $exception, $tokens);
+                throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
             }
-        } catch (MessagingException $exception) {
-            $this->failedNotification($notifiable, $notification, $exception, $tokens);
-            throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
         return $responses;
