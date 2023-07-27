@@ -2,15 +2,10 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
-use Spatie\Enum\Enum;
-
-/**
- * @method static self VISIBILITY_UNSPECIFIED()
- * @method static self PRIVATE()
- * @method static self PUBLIC()
- * @method static self SECRET()
- */
-class Visibility extends Enum
+enum Visibility: string
 {
-    //
+    case VISIBILITY_UNSPECIFIED = 'UNSPECIFIED';
+    case VISIBILITY_PRIVATE = 'PRIVATE';
+    case VISIBILITY_PUBLIC = 'PUBLIC';
+    case VISIBILITY_SECRET = 'SECRET';
 }

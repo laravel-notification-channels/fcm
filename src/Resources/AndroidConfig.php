@@ -2,6 +2,8 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
+use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+
 class AndroidConfig implements FcmResource
 {
     /**
@@ -134,9 +136,17 @@ class AndroidConfig implements FcmResource
     /**
      * @param  array|null  $data
      * @return AndroidConfig
+     *
+     * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
      */
     public function setData(?array $data): self
     {
+        foreach ($data as $key => $item) {
+            if (! is_string($item)) {
+                throw CouldNotSendNotification::invalidPropertyInArray($key);
+            }
+        }
+
         $this->data = $data;
 
         return $this;
@@ -187,7 +197,7 @@ class AndroidConfig implements FcmResource
     {
         return [
             'collapse_key' => $this->getCollapseKey(),
-            'priority' => ! is_null($this->getPriority()) ? $this->getPriority()->label ?? $this->getPriority()->getValue() : null,
+            'priority' => $this->getPriority()?->name,
             'ttl' => $this->getTtl(),
             'restricted_package_name' => $this->getRestrictedPackageName(),
             'data' => $this->getData(),

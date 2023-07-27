@@ -2,17 +2,12 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
-use Spatie\Enum\Enum;
-
-/**
- * @method static self PRIORITY_UNSPECIFIED()
- * @method static self PRIORITY_MIN()
- * @method static self PRIORITY_LOW()
- * @method static self PRIORITY_DEFAULT()
- * @method static self PRIORITY_HIGH()
- * @method static self PRIORITY_MAX()
- */
-class NotificationPriority extends Enum
+enum NotificationPriority
 {
-    //
+    case PRIORITY_UNSPECIFIED;
+    case PRIORITY_MIN;
+    case PRIORITY_LOW;
+    case PRIORITY_DEFAULT;
+    case PRIORITY_HIGH;
+    case PRIORITY_MAX;
 }

@@ -6,13 +6,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/laravel-notification-channels/fcm.svg?style=flat-square)](https://scrutinizer-ci.com/g/laravel-notification-channels/fcm)
 [![Total Downloads](https://img.shields.io/packagist/dt/laravel-notification-channels/fcm.svg?style=flat-square)](https://packagist.org/packages/laravel-notification-channels/fcm)
 
-This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel 5.5+, 6.x, 7.x and 8.x.
-
-## Version 2 Released (March 4, 2020)
-
-V2.0.0 has been released and FCM API calls has been migrated from legacy HTTP to HTTP v1 (docs from Firebase 
-[here](https://firebase.google.com/docs/cloud-messaging/migrate-v1)). This is a breaking change so notifications using
-v1.x should not upgrade to v2.x of this package unless you plan on migrating your notification classes.
+This package makes it easy to send notifications using [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/) (FCM) with Laravel.
 
 ## Contents
 
@@ -33,7 +27,7 @@ v1.x should not upgrade to v2.x of this package unless you plan on migrating you
 Install this package with Composer:
 
 ```bash
-composer require laravel-notification-channels/fcm:~2.0
+composer require laravel-notification-channels/fcm
 ```
 
 ### Setting up the FCM service
@@ -191,7 +185,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 ## Testing
 
 ``` bash
-$ composer test
+composer test
 ```
 
 ## Security

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Arr;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Message;
@@ -18,18 +19,13 @@ class FcmChannel
     const MAX_TOKEN_PER_REQUEST = 500;
 
     /**
-     * @var \Illuminate\Contracts\Events\Dispatcher
-     */
-    protected $events;
-
-    /**
      * FcmChannel constructor.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      */
-    public function __construct(Dispatcher $dispatcher)
+    public function __construct(protected Dispatcher $events)
     {
-        $this->events = $dispatcher;
+        //
     }
 
     /**
@@ -49,9 +45,9 @@ class FcmChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $token = $notifiable->routeNotificationFor('fcm', $notification);
+        $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
-        if (empty($token)) {
+        if (empty($tokens)) {
             return [];
         }
 
@@ -70,17 +66,17 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (is_array($token)) {
-                // Use multicast when there are multiple recipients
-                $partialTokens = array_chunk($token, self::MAX_TOKEN_PER_REQUEST, false);
+            if (count($tokens) === 1) {
+                $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
+            } else {
+                $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
+
                 foreach ($partialTokens as $tokens) {
                     $responses[] = $this->sendToFcmMulticast($fcmMessage, $tokens);
                 }
-            } else {
-                $responses[] = $this->sendToFcm($fcmMessage, $token);
             }
         } catch (MessagingException $exception) {
-            $this->failedNotification($notifiable, $notification, $exception);
+            $this->failedNotification($notifiable, $notification, $exception, $tokens);
             throw CouldNotSendNotification::serviceRespondedWithAnError($exception);
         }
 
@@ -143,9 +139,10 @@ class FcmChannel
      * @param  mixed  $notifiable
      * @param  \Illuminate\Notifications\Notification  $notification
      * @param  \Throwable  $exception
+     * @param  string|array  $token
      * @return array|null
      */
-    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    protected function failedNotification($notifiable, Notification $notification, Throwable $exception, $token)
     {
         return $this->events->dispatch(new NotificationFailed(
             $notifiable,
@@ -154,6 +151,7 @@ class FcmChannel
             [
                 'message' => $exception->getMessage(),
                 'exception' => $exception,
+                'token' => $token,
             ]
         ));
     }
