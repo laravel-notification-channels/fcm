@@ -47,10 +47,6 @@ class FcmChannel
     {
         $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
-        if (empty($tokens)) {
-            return [];
-        }
-
         // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
 
@@ -66,7 +62,13 @@ class FcmChannel
         $responses = [];
 
         try {
-            if (count($tokens) === 1) {
+            if ($fcmMessage->getTopic() || $fcmMessage->getCondition()) {
+                $responses[] = $this->messaging()->send($fcmMessage);
+            } elseif ($fcmMessage instanceof CloudMessage && $fcmMessage->hasTarget()) {
+                $responses[] = $this->messaging()->send($fcmMessage);
+            } elseif (empty($tokens)) {
+                $responses = [];
+            } elseif (count($tokens) === 1) {
                 $responses[] = $this->sendToFcm($fcmMessage, $tokens[0]);
             } else {
                 $partialTokens = array_chunk($tokens, self::MAX_TOKEN_PER_REQUEST, false);
