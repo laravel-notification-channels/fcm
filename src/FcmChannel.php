@@ -103,7 +103,7 @@ class FcmChannel
 
     /**
      * @param  \Kreait\Firebase\Messaging\Message  $fcmMessage
-     * @param $token
+     * @param  $token
      * @return array
      *
      * @throws \Kreait\Firebase\Exception\MessagingException
@@ -123,7 +123,7 @@ class FcmChannel
     }
 
     /**
-     * @param $fcmMessage
+     * @param  $fcmMessage
      * @param  array  $tokens
      * @return \Kreait\Firebase\Messaging\MulticastSendReport
      *
