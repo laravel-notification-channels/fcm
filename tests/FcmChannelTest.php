@@ -3,18 +3,17 @@
 namespace NotificationChannels\Fcm\Test;
 
 use Exception;
-use NotificationChannels\Fcm\FcmMessage;
+use Firebase\Contract\Messaging;
 use Illuminate\Contracts\Events\Dispatcher;
-use Mockery;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
+use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
-use Kreait\Firebase\Messaging\MessageTarget;
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Notifiable;
+use Mockery;
 use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
 use PHPUnit\Framework\TestCase;
-
-use Firebase\Contract\Messaging;
 
 class FcmChannelTest extends TestCase
 {
@@ -58,7 +57,7 @@ class FcmChannelTest extends TestCase
 
         $firebase = Mockery::mock(Messaging::class, [
             'sendMulticast' => MulticastSendReport::withItems([
-                SendReport::failure($this->target(), new Exception)
+                SendReport::failure($this->target(), new Exception),
             ]),
         ]);
 

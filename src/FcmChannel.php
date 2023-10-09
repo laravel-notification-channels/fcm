@@ -2,14 +2,13 @@
 
 namespace NotificationChannels\Fcm;
 
+use Firebase\Contract\Messaging;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
-use Kreait\Firebase\Messaging\Message;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
-use Firebase\Contract\Messaging;
 
 class FcmChannel
 {
