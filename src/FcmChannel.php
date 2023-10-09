@@ -34,11 +34,6 @@ class FcmChannel
     }
 
     /**
-     * @var string|null
-     */
-    protected $fcmProject = null;
-
-    /**
      * Send the given notification.
      *
      * @param  mixed  $notifiable
@@ -53,13 +48,7 @@ class FcmChannel
             return;
         }
 
-        // Get the message from the notification class
         $fcmMessage = $notification->toFcm($notifiable);
-
-        $this->fcmProject = null;
-        if (method_exists($notification, 'fcmProject')) {
-            $this->fcmProject = $notification->fcmProject($notifiable, $fcmMessage);
-        }
 
         collect($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
