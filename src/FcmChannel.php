@@ -111,9 +111,7 @@ class FcmChannel
             $notification,
             self::class,
             [
-                'message' => $report->message(),
-                'exception' => $report->error(),
-                'token' => $report->target()->value(),
+                'report' => $report,
             ]
         ));
     }
