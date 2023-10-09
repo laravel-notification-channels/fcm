@@ -2,7 +2,7 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
-use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Fcm\Exceptions\InvalidPropertyException;
 
 class WebpushConfig implements FcmResource
 {
@@ -65,13 +65,13 @@ class WebpushConfig implements FcmResource
      * @param  array|null  $data
      * @return WebpushConfig
      *
-     * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
+     * @throws \NotificationChannels\Fcm\Exceptions\InvalidPropertyException
      */
     public function setData(?array $data): self
     {
         foreach ($data as $key => $item) {
             if (! is_string($item)) {
-                throw CouldNotSendNotification::invalidPropertyInArray($key);
+                throw InvalidPropertyException::mustBeString($key);
             }
         }
 

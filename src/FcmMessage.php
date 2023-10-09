@@ -4,7 +4,7 @@ namespace NotificationChannels\Fcm;
 
 use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Messaging\Message;
-use NotificationChannels\Fcm\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Fcm\Exceptions\InvalidPropertyException;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
 use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\FcmOptions;
@@ -101,13 +101,13 @@ class FcmMessage implements Message
      * @param  array<string, string>|null  $data
      * @return $this
      *
-     * @throws \NotificationChannels\Fcm\Exceptions\CouldNotSendNotification
+     * @throws \NotificationChannels\Fcm\Exceptions\InvalidPropertyException
      */
     public function setData(?array $data): self
     {
         foreach ($data as $key => $item) {
             if (! is_string($item)) {
-                throw CouldNotSendNotification::invalidPropertyInArray($key);
+                throw InvalidPropertyException::mustBeString($key);
             }
         }
 

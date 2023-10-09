@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "php": ">= 8.1",
+        "php": ">= 8.2",
         "guzzlehttp/guzzle": "^7.0",
-        "illuminate/notifications": "^9.0|^10.0",
-        "illuminate/support": "^9.0|^10.0",
+        "illuminate/notifications": "^10.0",
+        "illuminate/support": "^10.0",
         "kreait/laravel-firebase": "^5.0"
     },
     "require-dev": {
@@ -30,13 +30,6 @@
     "autoload-dev": {
         "psr-4": {
             "NotificationChannels\\Fcm\\Test\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "NotificationChannels\\Fcm\\FcmServiceProvider"
-            ]
         }
     },
     "scripts": {
