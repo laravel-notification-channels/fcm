@@ -2,7 +2,6 @@
 
 namespace NotificationChannels\Fcm;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
@@ -10,7 +9,7 @@ use Illuminate\Support\Arr;
 use Kreait\Firebase\Messaging\Message;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
-use ReflectionException;
+use Firebase\Contract\Messaging;
 
 class FcmChannel
 {
@@ -25,9 +24,12 @@ class FcmChannel
      * Create a new channel instance.
      *
      * @param  Illuminate\Contracts\Events\Dispatcher  $events
+     * @param  Firebase\Contract\Messaging  $firebase
      */
-    public function __construct(protected Dispatcher $events)
-    {
+    public function __construct(
+        protected Dispatcher $events,
+        protected Messaging $firebase
+    ) {
         //
     }
 
@@ -61,7 +63,7 @@ class FcmChannel
 
         collect($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => $this->messaging()->sendMulticast($fcmMessage, $tokens))
+            ->map(fn ($tokens) => $this->firebase->sendMulticast($fcmMessage, $tokens))
             ->map(fn (MulticastSendReport $report) => $this->handleReport($notifiable, $notification, $report));
     }
 
@@ -80,20 +82,6 @@ class FcmChannel
             ->each(function (SendReport $report) {
                 $this->failedNotification($notifiable, $notification, $report);
             });
-    }
-
-    /**
-     * Get the messaging instance.
-     *
-     * @return Kreait\Firebase\Messaging\Message
-     */
-    protected function messaging(): Messaging
-    {
-        try {
-            return app('firebase.manager')->project($this->fcmProject)->messaging();
-        } catch (BindingResolutionException|ReflectionException $e) {
-            return app('firebase.messaging');
-        }
     }
 
     /**
