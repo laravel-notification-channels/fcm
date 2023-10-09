@@ -3,10 +3,10 @@
 namespace NotificationChannels\Fcm\Test;
 
 use Exception;
-use Firebase\Contract\Messaging;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
