@@ -68,7 +68,7 @@ class FcmChannel
     {
         collect($report->getItems())
             ->filter(fn (SendReport $report) => $report->isFailure())
-            ->each(function (SendReport $report) {
+            ->each(function (SendReport $report) use ($notifiable, $notification) {
                 $this->failedNotification($notifiable, $notification, $report);
             });
     }
