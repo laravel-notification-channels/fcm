@@ -25,10 +25,7 @@ class FcmChannel
      * @param  Illuminate\Contracts\Events\Dispatcher  $events
      * @param  Firebase\Contract\Messaging  $firebase
      */
-    public function __construct(
-        protected Dispatcher $events,
-        protected Messaging $firebase
-    ) {
+    public function __construct(protected Dispatcher $events, protected Messaging $firebase) {
         //
     }
 
@@ -52,7 +49,7 @@ class FcmChannel
         collect($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
             ->map(fn ($tokens) => $this->firebase->sendMulticast($fcmMessage, $tokens->all()))
-            ->map(fn (MulticastSendReport $report) => $this->handleReport($notifiable, $notification, $report));
+            ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
 
     /**
@@ -63,13 +60,11 @@ class FcmChannel
      * @param  Kreait\Firebase\Messaging\MulticastSendReport. $report
      * @return void
      */
-    protected function handleReport($notifiable, $notification, MulticastSendReport $report)
+    protected function checkReportForFailures($notifiable, $notification, MulticastSendReport $report)
     {
         collect($report->getItems())
             ->filter(fn (SendReport $report) => $report->isFailure())
-            ->each(function (SendReport $report) use ($notifiable, $notification) {
-                $this->failedNotification($notifiable, $notification, $report);
-            });
+            ->each(fn (SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
     }
 
     /**
@@ -80,15 +75,10 @@ class FcmChannel
      * @param  \Kreait\Firebase\Messaging\SendReport  $report
      * @return void
      */
-    protected function failedNotification($notifiable, Notification $notification, SendReport $report): void
+    protected function dispatchFailedNotification($notifiable, Notification $notification, SendReport $report): void
     {
-        $this->events->dispatch(new NotificationFailed(
-            $notifiable,
-            $notification,
-            self::class,
-            [
-                'report' => $report,
-            ]
-        ));
+        $this->events->dispatch(new NotificationFailed($notifiable, $notification, self::class, [
+            'report' => $report,
+        ]));
     }
 }
