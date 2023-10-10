@@ -51,7 +51,7 @@ class FcmChannel
 
         collect($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => $this->firebase->sendMulticast($fcmMessage, $tokens))
+            ->map(fn ($tokens) => $this->firebase->sendMulticast($fcmMessage, $tokens->all()))
             ->map(fn (MulticastSendReport $report) => $this->handleReport($notifiable, $notification, $report));
     }
 

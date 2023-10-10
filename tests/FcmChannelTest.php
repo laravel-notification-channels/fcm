@@ -37,11 +37,12 @@ class FcmChannelTest extends TestCase
         $events = Mockery::mock(Dispatcher::class);
         $events->shouldNotReceive('dispatch');
 
-        $firebase = Mockery::mock(Messaging::class, [
-            'sendMulticast' => MulticastSendReport::withItems([
+        $firebase = Mockery::mock(Messaging::class);
+        $firebase->shouldReceive('sendMulticast')
+            ->with(Mockery::any(), ['token'])
+            ->andReturn(MulticastSendReport::withItems([
                 SendReport::success($this->target(), []),
-            ]),
-        ]);
+            ]));
 
         $channel = new FcmChannel($events, $firebase);
 
@@ -55,11 +56,12 @@ class FcmChannelTest extends TestCase
         $events = Mockery::mock(Dispatcher::class);
         $events->shouldReceive('dispatch')->once();
 
-        $firebase = Mockery::mock(Messaging::class, [
-            'sendMulticast' => MulticastSendReport::withItems([
+        $firebase = Mockery::mock(Messaging::class);
+        $firebase->shouldReceive('sendMulticast')
+            ->with(Mockery::any(), ['token'])
+            ->andReturn(MulticastSendReport::withItems([
                 SendReport::failure($this->target(), new Exception),
-            ]),
-        ]);
+            ]));
 
         $channel = new FcmChannel($events, $firebase);
 
