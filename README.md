@@ -89,7 +89,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    ....
+    ...
 
     /**
      * Specifies the user's FCM token
@@ -110,7 +110,7 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    ....
+    ...
 
     /**
      * Specifies the user's FCM tokens
