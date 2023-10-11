@@ -25,7 +25,8 @@ class FcmChannel
      * @param  Illuminate\Contracts\Events\Dispatcher  $events
      * @param  Firebase\Contract\Messaging  $client
      */
-    public function __construct(protected Dispatcher $events, protected Messaging $client) {
+    public function __construct(protected Dispatcher $events, protected Messaging $client)
+    {
         //
     }
 

@@ -3,8 +3,8 @@
 namespace NotificationChannels\Fcm;
 
 use Illuminate\Support\Traits\Macroable;
-use Kreait\Firebase\Messaging\Message;
 use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Exceptions\InvalidPropertyException;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
 use NotificationChannels\Fcm\Resources\ApnsConfig;
@@ -279,7 +279,7 @@ class FcmMessage implements Message
     /**
      * Get the custom Firebase Messaging client.
      *
-     * @return  \Kreait\Firebase\Contract\Messaging|null
+     * @return \Kreait\Firebase\Contract\Messaging|null
      */
     public function getClient(): ?Messaging
     {
