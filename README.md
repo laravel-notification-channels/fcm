@@ -14,6 +14,7 @@ This package makes it easy to send notifications using [Firebase Cloud Messaging
 	- [Setting up the FCM service](#setting-up-the-fcm-service)
 - [Usage](#usage)
 	- [Available message methods](#available-message-methods)
+    - [Custom clients](#custom-clients)
     - [Handling errors](#handling-errors)
 - [Changelog](#changelog)
 - [Testing](#testing)
@@ -170,6 +171,19 @@ setTopic(string $topic)
 
 ```php
 setCondition(string $condition)
+```
+
+## Custom clients
+
+You can change the underlying Firebase Messaging client on the fly if required. Provide an instance of `Kreait\Firebase\Contract\Messaging` to your FCM message and it will be used in place of the default client.
+
+```php
+public function toFcm(mixed $notifiable)
+{
+    $client = app(\Kreait\Firebase\Contract\Messaging::class);
+
+    return FcmMessage::create()->usingClient($client);
+}
 ```
 
 ## Handling errors

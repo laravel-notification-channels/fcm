@@ -4,6 +4,7 @@ namespace NotificationChannels\Fcm;
 
 use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Messaging\Message;
+use Kreait\Firebase\Contract\Messaging;
 use NotificationChannels\Fcm\Exceptions\InvalidPropertyException;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
 use NotificationChannels\Fcm\Resources\ApnsConfig;
@@ -64,6 +65,13 @@ class FcmMessage implements Message
      * @var string|null
      */
     protected $condition;
+
+    /**
+     * The custom messaging client.
+     *
+     * @var \Kreait\Firebase\Contract\Messaging
+     */
+    protected $client;
 
     public static function create(): self
     {
@@ -264,6 +272,29 @@ class FcmMessage implements Message
     public function setCondition(?string $condition): self
     {
         $this->condition = $condition;
+
+        return $this;
+    }
+
+    /**
+     * Get the custom Firebase Messaging client.
+     *
+     * @return  \Kreait\Firebase\Contract\Messaging|null
+     */
+    public function getClient(): ?Messaging
+    {
+        return $this->client;
+    }
+
+    /**
+     * Set the custom Firebase Messaging client instance.
+     *
+     * @param  \Kreait\Firebase\Contract\Messaging  $client
+     * @return $this
+     */
+    public function usingClient(Messaging $client)
+    {
+        $this->client = $client;
 
         return $this;
     }

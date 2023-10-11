@@ -51,6 +51,28 @@ class FcmChannelTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function test_it_can_send_notifications_with_custom_client()
+    {
+        $events = Mockery::mock(Dispatcher::class);
+        $events->shouldNotReceive('dispatch');
+
+        $firebase = Mockery::mock(Messaging::class);
+        $events->shouldNotReceive('sendMulticast');
+
+        $customFirebase = Mockery::mock(Messaging::class);
+        $customFirebase->shouldReceive('sendMulticast')
+            ->with(Mockery::any(), ['token'])
+            ->andReturn(MulticastSendReport::withItems([
+                SendReport::success($this->target(), []),
+            ]));
+
+        $channel = new FcmChannel($events, $firebase);
+
+        $result = $channel->send(new DummyNotifiable, new DummyNotification($customFirebase));
+
+        $this->assertNull($result);
+    }
+
     public function test_it_can_dispatch_events()
     {
         $events = Mockery::mock(Dispatcher::class);
@@ -78,9 +100,18 @@ class FcmChannelTest extends TestCase
 
 class DummyNotification extends Notification
 {
+    public function __construct(public ?Messaging $client = null)
+    {
+        //
+    }
+
     public function toFcm($notifiable)
     {
-        return new FcmMessage;
+        if ($client = $this->client) {
+            return FcmMessage::create()->usingClient($client);
+        }
+
+        return FcmMessage::create();
     }
 }
 
