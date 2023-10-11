@@ -23,9 +23,10 @@ class FcmChannel
      * Create a new channel instance.
      *
      * @param  Illuminate\Contracts\Events\Dispatcher  $events
-     * @param  Firebase\Contract\Messaging  $firebase
+     * @param  Firebase\Contract\Messaging  $client
      */
-    public function __construct(protected Dispatcher $events, protected Messaging $firebase) {
+    public function __construct(protected Dispatcher $events, protected Messaging $client)
+    {
         //
     }
 
@@ -48,7 +49,7 @@ class FcmChannel
 
         collect($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => $this->firebase->sendMulticast($fcmMessage, $tokens->all()))
+            ->map(fn ($tokens) => ($fcmMessage->getClient() ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
             ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
 
