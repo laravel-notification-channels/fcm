@@ -2,10 +2,10 @@
 
 namespace NotificationChannels\Fcm;
 
-use NotificationChannels\Fcm\Resources\Notification;
 use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\Message;
+use NotificationChannels\Fcm\Resources\Notification;
 
 class FcmMessage implements Message
 {
