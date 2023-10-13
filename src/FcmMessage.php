@@ -2,6 +2,7 @@
 
 namespace NotificationChannels\Fcm;
 
+use NotificationChannels\Fcm\Resources\Notification;
 use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\Message;
@@ -41,9 +42,14 @@ class FcmMessage implements Message
     public array $custom = [];
 
     /**
+     * The message notification.
+     */
+    public ?Notification $notification = null;
+
+    /**
      * The custom messaging client.
      */
-    public ?Messaging $client;
+    public ?Messaging $client = null;
 
     /**
      * Create a new message instance.
@@ -114,6 +120,16 @@ class FcmMessage implements Message
     }
 
     /**
+     * Set the message notification.
+     */
+    public function notification(Notification $notification): self
+    {
+        $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
      * Set the message Firebase Messaging client instance.
      */
     public function usingClient(Messaging $client): self
@@ -131,6 +147,7 @@ class FcmMessage implements Message
             'token' => $this->token,
             'topic' => $this->topic,
             'condition' => $this->condition,
+            'notification' => $this->notification?->toArray(),
             ...$this->custom,
         ]);
     }

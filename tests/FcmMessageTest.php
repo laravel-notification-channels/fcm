@@ -5,6 +5,7 @@ namespace NotificationChannels\Fcm\Test;
 use Kreait\Firebase\Contract\Messaging;
 use Mockery;
 use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\Notification;
 use PHPUnit\Framework\TestCase;
 
 class FcmMessageTest extends TestCase
@@ -69,6 +70,17 @@ class FcmMessageTest extends TestCase
         ];
 
         $this->assertEquals($expected, $message->toArray());
+    }
+
+    public function test_it_can_set_notification()
+    {
+        $notification = Notification::create()->title('title');
+
+        $message = FcmMessage::create()->notification($notification);
+
+        $this->assertEquals([
+            'notification' => ['title' => 'title'],
+        ], $message->toArray());
     }
 
     public function test_it_can_set_client()

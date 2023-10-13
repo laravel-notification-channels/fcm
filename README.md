@@ -50,6 +50,7 @@ it via the `FcmChannel::class`. Here is an example:
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class AccountActivated extends Notification
 {
@@ -61,13 +62,14 @@ class AccountActivated extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
+            ->notification(
+                FcmNotification::create()
+                    ->title('Account Activated')
+                    ->body('Your account has been activated.')
+                    ->image('http://example.com/url-to-image-here.png')
+            )
             ->setData(['data1' => 'value', 'data2' => 'value2'])
             ->custom([
-                'notification' => [
-                    'title' => 'Account Activated',
-                    'body' => 'Your account has been activated',
-                    'image' => 'http://example.com/url-to-image-here.png',
-                ],
                 'android' => [
                     'notification' => [
                         'color' => '#0A0A0A',
