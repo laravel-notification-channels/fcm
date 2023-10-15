@@ -2,36 +2,23 @@
 
 namespace NotificationChannels\Fcm\Resources;
 
-class Notification implements FcmResource
+class Notification extends FcmResource
 {
     /**
-     * @var string|null
+     * Create a new notification instance.
      */
-    protected $title;
-
-    /**
-     * @var string|null
-     */
-    protected $body;
-
-    /**
-     * @var string|null
-     */
-    protected $image;
-
-    /**
-     * @return string|null
-     */
-    public function getTitle(): ?string
-    {
-        return $this->title;
+    public function __construct(
+        public ?string $title = null,
+        public ?string $body = null,
+        public ?string $image = null
+    ) {
+        //
     }
 
     /**
-     * @param  string|null  $title
-     * @return Notification
+     * Set the notification title.
      */
-    public function setTitle(?string $title): self
+    public function title(?string $title): self
     {
         $this->title = $title;
 
@@ -39,18 +26,9 @@ class Notification implements FcmResource
     }
 
     /**
-     * @return string|null
+     * Set the notification body.
      */
-    public function getBody(): ?string
-    {
-        return $this->body;
-    }
-
-    /**
-     * @param  string|null  $body
-     * @return Notification
-     */
-    public function setBody(?string $body): self
+    public function body(?string $body): self
     {
         $this->body = $body;
 
@@ -58,18 +36,9 @@ class Notification implements FcmResource
     }
 
     /**
-     * @return string|null
+     * Set the notification image.
      */
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param  string|null  $image
-     * @return Notification
-     */
-    public function setImage(?string $image): self
+    public function image(?string $image): self
     {
         $this->image = $image;
 
@@ -77,22 +46,14 @@ class Notification implements FcmResource
     }
 
     /**
-     * @return static
-     */
-    public static function create(): self
-    {
-        return new self;
-    }
-
-    /**
-     * {@inheritdoc}
+     * Map the resource to an array.
      */
     public function toArray(): array
     {
-        return [
-            'title' => $this->getTitle(),
-            'body' => $this->getBody(),
-            'image' => $this->getImage(),
-        ];
+        return array_filter([
+            'title' => $this->title,
+            'body' => $this->body,
+            'image' => $this->image,
+        ]);
     }
 }

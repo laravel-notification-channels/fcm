@@ -50,11 +50,7 @@ it via the `FcmChannel::class`. Here is an example:
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\AndroidConfig;
-use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
-use NotificationChannels\Fcm\Resources\AndroidNotification;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class AccountActivated extends Notification
 {
@@ -65,19 +61,27 @@ class AccountActivated extends Notification
 
     public function toFcm($notifiable)
     {
-        return FcmMessage::create()
-            ->setData(['data1' => 'value', 'data2' => 'value2'])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('Account Activated')
-                ->setBody('Your account has been activated.')
-                ->setImage('http://example.com/url-to-image-here.png'))
-            ->setAndroid(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
-                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
-            )->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+        return new FcmMessage(notification: new FcmNotification(
+                title: 'Account Activated',
+                body: 'Your account has been activated.',
+                image: 'http://example.com/url-to-image-here.png'
+            ))
+            ->data(['data1' => 'value', 'data2' => 'value2'])
+            ->custom([
+                'android' => [
+                    'notification' => [
+                        'color' => '#0A0A0A',
+                    ],
+                    'fcm_options' => [
+                        'analytics_label' => 'analytics',
+                    ],
+                ],
+                'apns' => [
+                    'fcm_options' => [
+                        'analytics_label' => 'analytics',
+                    ],
+                ],
+            ]);
     }
 }
 ```
@@ -132,45 +136,16 @@ $user->notify(new AccountActivated);
 
 ### Available Message methods
 
-The `FcmMessage` class contains the following methods for defining the payload. All these methods correspond to the 
-available payload defined in the 
-[FCM API documentation](https://firebase.google.com/docs/reference/fcm/rest/v1/projects.messages). Refer to this link to
-find all the available data you can set in your FCM notification.
+View the `FcmMessage` source for the complete list of options.
 
 ```php
-setName(string $name)
-```
-
-```php
-setData(array $data)
-```
-
-```php
-setNotification(\NotificationChannels\Fcm\Resources\Notification $notification)
-```
-
-```php
-setAndroid(NotificationChannels\Fcm\Resources\AndroidConfig $androidConfig)
-```
-
-```php
-setApns(NotificationChannels\Fcm\Resources\ApnsConfig $apnsConfig)
-```
-
-```php
-setWebpush(NotificationChannels\Fcm\Resources\WebpushConfig $webpushConfig)
-```
-
-```php
-setFcmOptions(NotificationChannels\Fcm\Resources\FcmOptions $fcmOptions)
-```
-
-```php
-setTopic(string $topic)
-```
-
-```php
-setCondition(string $condition)
+FcmMessage::create()
+    ->name('name')
+    ->token('token')
+    ->topic('topic')
+    ->condition('condition')
+    ->data(['a' => 'b'])
+    ->custom(['notification' => []]);
 ```
 
 ## Custom clients

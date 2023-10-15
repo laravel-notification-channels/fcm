@@ -5,92 +5,40 @@ namespace NotificationChannels\Fcm;
 use Illuminate\Support\Traits\Macroable;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\Message;
-use NotificationChannels\Fcm\Exceptions\InvalidPropertyException;
-use NotificationChannels\Fcm\Resources\AndroidConfig;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\FcmOptions;
 use NotificationChannels\Fcm\Resources\Notification;
-use NotificationChannels\Fcm\Resources\WebpushConfig;
 
 class FcmMessage implements Message
 {
     use Macroable;
 
     /**
-     * @var string|null
+     * Create a new message instance.
      */
-    protected $name;
-
-    /**
-     * @var array|null
-     */
-    protected $data;
-
-    /**
-     * @var Notification|null
-     */
-    protected $notification;
-
-    /**
-     * @var AndroidConfig|null
-     */
-    protected $android;
-
-    /**
-     * @var WebpushConfig|null
-     */
-    protected $webpush;
-
-    /**
-     * @var ApnsConfig|null
-     */
-    protected $apns;
-
-    /**
-     * @var FcmOptions|null
-     */
-    protected $fcmOptions;
-
-    /**
-     * @var string|null
-     */
-    protected $token;
-
-    /**
-     * @var string|null
-     */
-    protected $topic;
-
-    /**
-     * @var string|null
-     */
-    protected $condition;
-
-    /**
-     * The custom messaging client.
-     *
-     * @var \Kreait\Firebase\Contract\Messaging
-     */
-    protected $client;
-
-    public static function create(): self
-    {
-        return new self;
+    public function __construct(
+        public ?string $name = null,
+        public ?string $token = null,
+        public ?string $topic = null,
+        public ?string $condition = null,
+        public ?array $data = [],
+        public array $custom = [],
+        public ?Notification $notification = null,
+        public ?Messaging $client = null,
+    ) {
+        //
     }
 
     /**
-     * @return string|null
+     * Create a new message instance.
      */
-    public function getName(): ?string
+    public static function create(...$args): static
     {
-        return $this->name;
+        return new static(...$args);
     }
 
     /**
-     * @param  string|null  $name
-     * @return $this
+     * Set the message name.
      */
-    public function setName(?string $name): self
+    public function name(?string $name): self
     {
         $this->name = $name;
 
@@ -98,140 +46,9 @@ class FcmMessage implements Message
     }
 
     /**
-     * @return array|null
+     * Set the message token.
      */
-    public function getData(): ?array
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param  array<string, string>|null  $data
-     * @return $this
-     *
-     * @throws \NotificationChannels\Fcm\Exceptions\InvalidPropertyException
-     */
-    public function setData(?array $data): self
-    {
-        foreach ($data as $key => $item) {
-            if (! is_string($item)) {
-                throw InvalidPropertyException::mustBeString($key);
-            }
-        }
-
-        $this->data = $data;
-
-        return $this;
-    }
-
-    /**
-     * @return Notification|null
-     */
-    public function getNotification(): ?Notification
-    {
-        return $this->notification;
-    }
-
-    /**
-     * @param  Notification|null  $notification
-     * @return $this
-     */
-    public function setNotification(?Notification $notification): self
-    {
-        $this->notification = $notification;
-
-        return $this;
-    }
-
-    /**
-     * @return AndroidConfig|null
-     */
-    public function getAndroid(): ?AndroidConfig
-    {
-        return $this->android;
-    }
-
-    /**
-     * @param  AndroidConfig|null  $android
-     * @return $this
-     */
-    public function setAndroid(?AndroidConfig $android): self
-    {
-        $this->android = $android;
-
-        return $this;
-    }
-
-    /**
-     * @return WebpushConfig|null
-     */
-    public function getWebpush(): ?WebpushConfig
-    {
-        return $this->webpush;
-    }
-
-    /**
-     * @param  WebpushConfig|null  $webpush
-     * @return $this
-     */
-    public function setWebpush(?WebpushConfig $webpush): self
-    {
-        $this->webpush = $webpush;
-
-        return $this;
-    }
-
-    /**
-     * @return ApnsConfig|null
-     */
-    public function getApns(): ?ApnsConfig
-    {
-        return $this->apns;
-    }
-
-    /**
-     * @param  ApnsConfig|null  $apns
-     * @return $this
-     */
-    public function setApns(?ApnsConfig $apns): self
-    {
-        $this->apns = $apns;
-
-        return $this;
-    }
-
-    /**
-     * @return FcmOptions|null
-     */
-    public function getFcmOptions(): ?FcmOptions
-    {
-        return $this->fcmOptions;
-    }
-
-    /**
-     * @param  FcmOptions|null  $fcmOptions
-     * @return $this
-     */
-    public function setFcmOptions(?FcmOptions $fcmOptions): self
-    {
-        $this->fcmOptions = $fcmOptions;
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getToken(): ?string
-    {
-        return $this->token;
-    }
-
-    /**
-     * @param  string|null  $token
-     * @return $this
-     */
-    public function setToken(?string $token): self
+    public function token(?string $token): self
     {
         $this->token = $token;
 
@@ -239,18 +56,9 @@ class FcmMessage implements Message
     }
 
     /**
-     * @return string|null
+     * Set the message topic.s
      */
-    public function getTopic(): ?string
-    {
-        return $this->topic;
-    }
-
-    /**
-     * @param  string|null  $topic
-     * @return $this
-     */
-    public function setTopic(?string $topic): self
+    public function topic(?string $topic): self
     {
         $this->topic = $topic;
 
@@ -258,18 +66,9 @@ class FcmMessage implements Message
     }
 
     /**
-     * @return string|null
+     * Set the message condition.
      */
-    public function getCondition(): ?string
-    {
-        return $this->condition;
-    }
-
-    /**
-     * @param  string|null  $condition
-     * @return $this
-     */
-    public function setCondition(?string $condition): self
+    public function condition(?string $condition): self
     {
         $this->condition = $condition;
 
@@ -277,22 +76,39 @@ class FcmMessage implements Message
     }
 
     /**
-     * Get the custom Firebase Messaging client.
-     *
-     * @return \Kreait\Firebase\Contract\Messaging|null
+     * Set the message data.
      */
-    public function getClient(): ?Messaging
+    public function data(?array $data): self
     {
-        return $this->client;
+        $this->data = $data;
+
+        return $this;
     }
 
     /**
-     * Set the custom Firebase Messaging client instance.
-     *
-     * @param  \Kreait\Firebase\Contract\Messaging  $client
-     * @return $this
+     * Set additional custom message data.
      */
-    public function usingClient(Messaging $client)
+    public function custom(?array $custom): self
+    {
+        $this->custom = $custom;
+
+        return $this;
+    }
+
+    /**
+     * Set the message notification.
+     */
+    public function notification(Notification $notification): self
+    {
+        $this->notification = $notification;
+
+        return $this;
+    }
+
+    /**
+     * Set the message Firebase Messaging client instance.
+     */
+    public function usingClient(Messaging $client): self
     {
         $this->client = $client;
 
@@ -301,29 +117,15 @@ class FcmMessage implements Message
 
     public function toArray()
     {
-        $data = [
-            'name' => $this->getName(),
-            'data' => $this->getData(),
-            'notification' => ! is_null($this->getNotification()) ? $this->getNotification()->toArray() : null,
-            'android' => ! is_null($this->getAndroid()) ? $this->getAndroid()->toArray() : null,
-            'webpush' => ! is_null($this->getWebpush()) ? $this->getWebpush()->toArray() : null,
-            'apns' => ! is_null($this->getApns()) ? $this->getApns()->toArray() : null,
-            'fcm_options' => ! is_null($this->getFcmOptions()) ? $this->getFcmOptions()->toArray() : null,
-        ];
-
-        if ($token = $this->getToken()) {
-            $data['token'] = $token;
-        }
-
-        if ($topic = $this->getTopic()) {
-            $data['topic'] = $topic;
-        }
-
-        if ($condition = $this->getCondition()) {
-            $data['condition'] = $condition;
-        }
-
-        return $data;
+        return array_filter([
+            'name' => $this->name,
+            'data' => $this->data,
+            'token' => $this->token,
+            'topic' => $this->topic,
+            'condition' => $this->condition,
+            'notification' => $this->notification?->toArray(),
+            ...$this->custom,
+        ]);
     }
 
     /**
