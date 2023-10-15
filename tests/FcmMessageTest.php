@@ -28,7 +28,6 @@ class FcmMessageTest extends TestCase
         $this->assertEquals('name', $message->name);
     }
 
-
     public function test_it_can_set_name()
     {
         $message = FcmMessage::create()->name('name');
