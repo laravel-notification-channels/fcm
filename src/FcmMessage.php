@@ -12,51 +12,27 @@ class FcmMessage implements Message
     use Macroable;
 
     /**
-     * The message name.
+     * Create a new message instance.
      */
-    public ?string $name = null;
-
-    /**
-     * The message token.
-     */
-    public ?string $token = null;
-
-    /**
-     * The message topic.
-     */
-    public ?string $topic = null;
-
-    /**
-     * The message condition.
-     */
-    public ?string $condition = null;
-
-    /**
-     * The message data.
-     */
-    public ?array $data = [];
-
-    /**
-     * The custom message data.
-     */
-    public array $custom = [];
-
-    /**
-     * The message notification.
-     */
-    public ?Notification $notification = null;
-
-    /**
-     * The custom messaging client.
-     */
-    public ?Messaging $client = null;
+    public function __construct(
+        public ?string $name = null,
+        public ?string $token = null,
+        public ?string $topic = null,
+        public ?string $condition = null,
+        public ?array $data = [],
+        public array $custom = [],
+        public ?Notification $notification = null,
+        public ?Messaging $client = null,
+    ) {
+        //
+    }
 
     /**
      * Create a new message instance.
      */
-    public static function create(): self
+    public static function create(...$args): static
     {
-        return new self;
+        return new static(...$args);
     }
 
     /**

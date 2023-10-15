@@ -61,14 +61,12 @@ class AccountActivated extends Notification
 
     public function toFcm($notifiable)
     {
-        return FcmMessage::create()
-            ->notification(
-                FcmNotification::create()
-                    ->title('Account Activated')
-                    ->body('Your account has been activated.')
-                    ->image('http://example.com/url-to-image-here.png')
-            )
-            ->setData(['data1' => 'value', 'data2' => 'value2'])
+        return new FcmMessage(notification: new FcmNotification(
+                title: 'Account Activated',
+                body: 'Your account has been activated.',
+                image: 'http://example.com/url-to-image-here.png'
+            ))
+            ->data(['data1' => 'value', 'data2' => 'value2'])
             ->custom([
                 'android' => [
                     'notification' => [

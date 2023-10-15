@@ -5,19 +5,15 @@ namespace NotificationChannels\Fcm\Resources;
 class Notification extends FcmResource
 {
     /**
-     * The notification title.
+     * Create a new notification instance.
      */
-    public ?string $title = null;
-
-    /**
-     * The notification body.
-     */
-    public ?string $body = null;
-
-    /**
-     * The notification image.
-     */
-    public ?string $image = null;
+    public function __construct(
+        public ?string $title = null,
+        public ?string $body = null,
+        public ?string $image = null
+    ) {
+        //
+    }
 
     /**
      * Set the notification title.

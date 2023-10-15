@@ -12,10 +12,22 @@ class FcmMessageTest extends TestCase
 {
     public function test_it_can_be_instantiated()
     {
-        $message = FcmMessage::create();
+        $message = new FcmMessage(name: 'name');
 
         $this->assertInstanceOf(FcmMessage::class, $message);
+
+        $this->assertEquals('name', $message->name);
     }
+
+    public function test_it_can_be_created()
+    {
+        $message = FcmMessage::create(name: 'name');
+
+        $this->assertInstanceOf(FcmMessage::class, $message);
+
+        $this->assertEquals('name', $message->name);
+    }
+
 
     public function test_it_can_set_name()
     {

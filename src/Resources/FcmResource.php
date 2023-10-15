@@ -7,9 +7,9 @@ abstract class FcmResource
     /**
      * @return static
      */
-    public static function create(): static
+    public static function create(...$args): static
     {
-        return new static;
+        return new static(...$args);
     }
 
     /**
