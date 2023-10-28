@@ -59,7 +59,7 @@ class AccountActivated extends Notification
         return [FcmChannel::class];
     }
 
-    public function toFcm($notifiable)
+    public function toFcm($notifiable): FcmMessage
     {
         return (new FcmMessage(notification: new FcmNotification(
                 title: 'Account Activated',
@@ -153,7 +153,7 @@ FcmMessage::create()
 You can change the underlying Firebase Messaging client on the fly if required. Provide an instance of `Kreait\Firebase\Contract\Messaging` to your FCM message and it will be used in place of the default client.
 
 ```php
-public function toFcm(mixed $notifiable)
+public function toFcm(mixed $notifiable): FcmMessage
 {
     $client = app(\Kreait\Firebase\Contract\Messaging::class);
 
