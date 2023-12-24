@@ -41,7 +41,7 @@ class FcmChannel
 
         $fcmMessage = $notification->toFcm($notifiable);
 
-        return collect($tokens)
+        return Collection::make($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
             ->map(fn ($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
             ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
@@ -52,7 +52,7 @@ class FcmChannel
      */
     protected function checkReportForFailures(mixed $notifiable, Notification $notification, MulticastSendReport $report): MulticastSendReport
     {
-        collect($report->getItems())
+        Collection::make($report->getItems())
             ->filter(fn (SendReport $report) => $report->isFailure())
             ->each(fn (SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
 
