@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Collection;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
@@ -48,7 +49,8 @@ class FcmChannelTest extends TestCase
 
         $result = $channel->send(new DummyNotifiable, new DummyNotification);
 
-        $this->assertNull($result);
+        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(MulticastSendReport::class, $result->first());
     }
 
     public function test_it_can_send_notifications_with_custom_client()
@@ -70,7 +72,7 @@ class FcmChannelTest extends TestCase
 
         $result = $channel->send(new DummyNotifiable, new DummyNotification($customFirebase));
 
-        $this->assertNull($result);
+        $this->assertInstanceOf(Collection::class, $result);
     }
 
     public function test_it_can_dispatch_events()
@@ -89,7 +91,7 @@ class FcmChannelTest extends TestCase
 
         $result = $channel->send(new DummyNotifiable, new DummyNotification);
 
-        $this->assertNull($result);
+        $this->assertInstanceOf(Collection::class, $result);
     }
 
     protected function target()
