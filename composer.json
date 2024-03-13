@@ -16,7 +16,7 @@
         "guzzlehttp/guzzle": "^7.0",
         "illuminate/notifications": "^10.0|^11.0",
         "illuminate/support": "^10.0|^11.0",
-        "kreait/laravel-firebase": "^5.0"
+        "kreait/laravel-firebase": "^5.7"
     },
     "require-dev": {
         "mockery/mockery": "^1.5.1",
