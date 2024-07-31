@@ -71,12 +71,18 @@ class AccountActivated extends Notification
                 'android' => [
                     'notification' => [
                         'color' => '#0A0A0A',
+                        'sound' => 'default',
                     ],
                     'fcm_options' => [
                         'analytics_label' => 'analytics',
                     ],
                 ],
                 'apns' => [
+                    'payload' => [
+                        'aps' => [
+                            'sound' => 'default'
+                        ],
+                    ],
                     'fcm_options' => [
                         'analytics_label' => 'analytics',
                     ],
