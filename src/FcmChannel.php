@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
+use Psr\Log\LoggerInterface;
 
 class FcmChannel
 {
@@ -21,15 +22,30 @@ class FcmChannel
     const TOKENS_PER_REQUEST = 500;
 
     /**
-     * Create a new channel instance.
+     * Logger instance
+     *
+     * @var LoggerInterface
      */
-    public function __construct(protected Dispatcher $events, protected Messaging $client)
+    protected LoggerInterface $logger;
+
+    /**
+     * Create a new channel instance.
+     *
+     * @param Dispatcher $events
+     * @param Messaging $client
+     * @param LoggerInterface $logger
+     */
+    public function __construct(protected Dispatcher $events, protected Messaging $client, LoggerInterface $logger)
     {
-        //
+        $this->logger = $logger;
     }
 
     /**
      * Send the given notification.
+     *
+     * @param mixed $notifiable
+     * @param Notification $notification
+     * @return Collection|null
      */
     public function send(mixed $notifiable, Notification $notification): ?Collection
     {
@@ -43,12 +59,25 @@ class FcmChannel
 
         return Collection::make($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
-            ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
+            ->map(function ($tokens) use ($fcmMessage, $notifiable, $notification) {
+                try {
+                    $report = ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all());
+                    return $this->checkReportForFailures($notifiable, $notification, $report);
+                } catch (\Exception $e) {
+                    $this->logger->error('Failed to send FCM notification', ['exception' => $e]);
+                    $this->dispatchFailedNotification($notifiable, $notification, $e);
+                    return null;
+                }
+            });
     }
 
     /**
      * Handle the report for the notification and dispatch any failed notifications.
+     *
+     * @param mixed $notifiable
+     * @param Notification $notification
+     * @param MulticastSendReport $report
+     * @return MulticastSendReport
      */
     protected function checkReportForFailures(mixed $notifiable, Notification $notification, MulticastSendReport $report): MulticastSendReport
     {
@@ -61,11 +90,18 @@ class FcmChannel
 
     /**
      * Dispatch failed event.
+     *
+     * @param mixed $notifiable
+     * @param Notification $notification
+     * @param mixed $report
+     * @return void
      */
-    protected function dispatchFailedNotification(mixed $notifiable, Notification $notification, SendReport $report): void
+    protected function dispatchFailedNotification(mixed $notifiable, Notification $notification, $report): void
     {
         $this->events->dispatch(new NotificationFailed($notifiable, $notification, self::class, [
             'report' => $report,
         ]));
+        $this->logger->info('Notification failed', ['notifiable' => $notifiable, 'notification' => $notification, 'report' => $report]);
     }
 }
+
