@@ -5,6 +5,9 @@ namespace NotificationChannels\Fcm\Test;
 use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Events\NotificationFailed;
+use Illuminate\Notifications\Events\NotificationSending;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Kreait\Firebase\Contract\Messaging;
@@ -36,7 +39,14 @@ class FcmChannelTest extends TestCase
     public function test_it_can_send_notifications()
     {
         $events = Mockery::mock(Dispatcher::class);
-        $events->shouldNotReceive('dispatch');
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationSending::class));
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationSent::class));
+        $events->shouldNotReceive('dispatch')
+            ->with(Mockery::type(NotificationFailed::class));
 
         $firebase = Mockery::mock(Messaging::class);
         $firebase->shouldReceive('sendMulticast')
@@ -56,7 +66,14 @@ class FcmChannelTest extends TestCase
     public function test_it_can_send_notifications_with_custom_client()
     {
         $events = Mockery::mock(Dispatcher::class);
-        $events->shouldNotReceive('dispatch');
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationSending::class));
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationSent::class));
+        $events->shouldNotReceive('dispatch')
+            ->with(Mockery::type(NotificationFailed::class));
 
         $firebase = Mockery::mock(Messaging::class);
         $events->shouldNotReceive('sendMulticast');
@@ -78,7 +95,14 @@ class FcmChannelTest extends TestCase
     public function test_it_can_dispatch_events()
     {
         $events = Mockery::mock(Dispatcher::class);
-        $events->shouldReceive('dispatch')->once();
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationSending::class));
+        $events->shouldNotReceive('dispatch')
+            ->with(Mockery::type(NotificationSent::class));
+        $events->shouldReceive('dispatch')
+            ->once()
+            ->with(Mockery::type(NotificationFailed::class));
 
         $firebase = Mockery::mock(Messaging::class);
         $firebase->shouldReceive('sendMulticast')
