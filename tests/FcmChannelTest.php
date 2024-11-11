@@ -4,10 +4,10 @@ namespace NotificationChannels\Fcm\Test;
 
 use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Events\NotificationSending;
 use Illuminate\Notifications\Events\NotificationSent;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Kreait\Firebase\Contract\Messaging;
