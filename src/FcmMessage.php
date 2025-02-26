@@ -82,7 +82,7 @@ class FcmMessage implements Message
     {
         if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
             throw new \InvalidArgumentException('Data values must be strings.');
-          }
+        }
 
         $this->data = $data;
 
