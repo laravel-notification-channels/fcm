@@ -3,6 +3,7 @@
 namespace NotificationChannels\Fcm;
 
 use Illuminate\Support\Traits\Macroable;
+use InvalidArgumentException;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\Message;
 use NotificationChannels\Fcm\Resources\Notification;
@@ -81,7 +82,7 @@ class FcmMessage implements Message
     public function data(?array $data): self
     {
         if (! empty(array_filter($data, fn ($value) => ! is_string($value)))) {
-            throw new \InvalidArgumentException('Data values must be strings.');
+            throw new InvalidArgumentException('Data values must be strings.');
         }
 
         $this->data = $data;
