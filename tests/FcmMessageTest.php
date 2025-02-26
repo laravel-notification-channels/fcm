@@ -63,6 +63,13 @@ class FcmMessageTest extends TestCase
         $this->assertEquals(['data' => ['a' => 'b']], $message->toArray());
     }
 
+    public function test_it_throws_exception_on_invalid_data()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        FcmMessage::create()->data(['a' => 1]);
+    }
+
     public function test_it_can_set_custom_attributes()
     {
         $message = FcmMessage::create()

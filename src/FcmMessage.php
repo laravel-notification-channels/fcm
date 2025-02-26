@@ -76,10 +76,14 @@ class FcmMessage implements Message
     }
 
     /**
-     * Set the message data.
+     * Set the message data, or throw exception if data is not an array of strings.
      */
     public function data(?array $data): self
     {
+        if (! empty(array_filter($data, fn ($value) => ! is_string($value)))) {
+            throw new \InvalidArgumentException('Data values must be strings.');
+        }
+
         $this->data = $data;
 
         return $this;
