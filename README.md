@@ -188,13 +188,16 @@ class DeleteExpiredNotificationTokens
      */
     public function handle(NotificationFailed $event): void
     {
-        $report = Arr::get($event->data, 'report');
+        if ($event->channel == FcmChannel::class) {
 
-        $target = $report->target();
+            $report = Arr::get($event->data, 'report');
 
-        $event->notifiable->notificationTokens()
-            ->where('push_token', $target->value())
-            ->delete();
+            $target = $report->target();
+
+            $event->notifiable->notificationTokens()
+                ->where('push_token', $target->value())
+                ->delete();
+        }
     }
 }
 ```
