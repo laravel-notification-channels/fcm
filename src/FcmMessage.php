@@ -13,6 +13,11 @@ class FcmMessage implements Message
     use Macroable;
 
     /**
+     * Extra android notification options (channel_id, sound, color, etc.).
+     */
+    protected ?array $androidNotification = null;
+
+    /**
      * Create a new message instance.
      */
     public function __construct(
@@ -57,7 +62,7 @@ class FcmMessage implements Message
     }
 
     /**
-     * Set the message topic.s
+     * Set the message topic.
      */
     public function topic(?string $topic): self
     {
@@ -95,7 +100,7 @@ class FcmMessage implements Message
      */
     public function custom(?array $custom): self
     {
-        $this->custom = $custom;
+        $this->custom = $custom ?? [];
 
         return $this;
     }
@@ -120,9 +125,26 @@ class FcmMessage implements Message
         return $this;
     }
 
+    /**
+     * Helper to define android.notification options.
+     *
+     * Example:
+     * ->androidNotification([
+     *     'channel_id' => 'alertas-operativas',
+     *     'sound' => 'default',
+     * ])
+     */
+    public function androidNotification(array $options): self
+    {
+        $this->androidNotification = $options;
+
+        return $this;
+    }
+
     public function toArray()
     {
-        return array_filter([
+        // payload base
+        $payload = array_filter([
             'name' => $this->name,
             'data' => $this->data,
             'token' => $this->token,
@@ -131,6 +153,17 @@ class FcmMessage implements Message
             'notification' => $this->notification?->toArray(),
             ...$this->custom,
         ]);
+
+        // si usamos el helper, lo metemos en android.notification
+        if (! empty($this->androidNotification)) {
+            $payload['android'] = $payload['android'] ?? [];
+            $payload['android']['notification'] = array_merge(
+                $payload['android']['notification'] ?? [],
+                $this->androidNotification
+            );
+        }
+
+        return $payload;
     }
 
     /**
