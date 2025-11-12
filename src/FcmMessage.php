@@ -86,7 +86,7 @@ class FcmMessage implements Message
      */
     public function data(?array $data): self
     {
-        if (! empty(array_filter($data, fn ($value) => ! is_string($value)))) {
+        if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
             throw new InvalidArgumentException('Data values must be strings.');
         }
 
@@ -98,9 +98,37 @@ class FcmMessage implements Message
     /**
      * Set additional custom message data.
      */
-    public function custom(?array $custom): self
+    public function custom(?array $custom = []): self
     {
         $this->custom = $custom ?? [];
+
+        return $this;
+    }
+ 
+    /**
+     * Helper Android
+     */
+    public function android(array $options = []): self
+    {
+        // preserva lo que ya hubiera en custom y agrega/actualiza 'android'
+        $this->custom([
+            ...$this->custom,
+            'android' => $options,
+        ]);
+
+        return $this;
+    }
+
+    
+    /**
+     * Helper iOS
+     */
+    public function ios(array $options = []): self
+    {
+        $this->custom([
+            ...$this->custom,
+            'ios' => $options,
+        ]);
 
         return $this;
     }
