@@ -33,13 +33,13 @@ class FcmMessageHelpersTest extends TestCase
     {
         $msg = FcmMessage::create()
             ->ios(['payload' => ['aps' => ['sound' => 'default']]]);
-
         $payload = $msg->toArray();
 
-        $this->assertArrayHasKey('ios', $payload);
-        $this->assertArrayHasKey('payload', $payload['ios']);
-        $this->assertEquals('default', $payload['ios']['payload']['aps']['sound']);
+        $this->assertArrayHasKey('apns', $payload);
+        $this->assertArrayHasKey('payload', $payload['apns']);
+        $this->assertEquals('default', $payload['apns']['payload']['aps']['sound']);
     }
+
 
 
     /**

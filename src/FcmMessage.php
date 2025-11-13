@@ -12,14 +12,7 @@ class FcmMessage implements Message
 {
     use Macroable;
 
-    /**
-     * Extra android notification options (channel_id, sound, color, etc.).
-     */
-    protected ?array $androidNotification = null;
-
-    /**
-     * Create a new message instance.
-     */
+   
     public function __construct(
         public ?string $name = null,
         public ?string $token = null,
@@ -29,21 +22,15 @@ class FcmMessage implements Message
         public array $custom = [],
         public ?Notification $notification = null,
         public ?Messaging $client = null,
-    ) {
-        //
-    }
+    ) { }
 
-    /**
-     * Create a new message instance.
-     */
+    
     public static function create(...$args): static
     {
         return new static(...$args);
     }
 
-    /**
-     * Set the message name.
-     */
+   
     public function name(?string $name): self
     {
         $this->name = $name;
@@ -51,9 +38,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message token.
-     */
+    
     public function token(?string $token): self
     {
         $this->token = $token;
@@ -61,9 +46,6 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message topic.
-     */
     public function topic(?string $topic): self
     {
         $this->topic = $topic;
@@ -71,9 +53,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message condition.
-     */
+    
     public function condition(?string $condition): self
     {
         $this->condition = $condition;
@@ -81,9 +61,6 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message data, or throw exception if data is not an array of strings.
-     */
     public function data(?array $data): self
     {
         if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
@@ -95,22 +72,20 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set additional custom message data.
-     */
+ 
     public function custom(?array $custom = []): self
     {
         $this->custom = $custom ?? [];
 
         return $this;
     }
- 
+
     /**
-     * Helper Android
+     * Set android-specific custom options.
      */
     public function android(array $options = []): self
     {
-        // preserva lo que ya hubiera en custom y agrega/actualiza 'android'
+        
         $this->custom([
             ...$this->custom,
             'android' => $options,
@@ -119,23 +94,21 @@ class FcmMessage implements Message
         return $this;
     }
 
-    
+
     /**
-     * Helper iOS
+     * Set APNs-specific custom options for iOS.
      */
     public function ios(array $options = []): self
     {
         $this->custom([
             ...$this->custom,
-            'ios' => $options,
+            'apns' => $options,
         ]);
 
         return $this;
     }
 
-    /**
-     * Set the message notification.
-     */
+   
     public function notification(Notification $notification): self
     {
         $this->notification = $notification;
@@ -143,9 +116,6 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message Firebase Messaging client instance.
-     */
     public function usingClient(Messaging $client): self
     {
         $this->client = $client;
@@ -153,25 +123,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Helper to define android.notification options.
-     *
-     * Example:
-     * ->androidNotification([
-     *     'channel_id' => 'alertas-operativas',
-     *     'sound' => 'default',
-     * ])
-     */
-    public function androidNotification(array $options): self
-    {
-        $this->androidNotification = $options;
-
-        return $this;
-    }
-
     public function toArray()
     {
-        // payload base
+
         $payload = array_filter([
             'name' => $this->name,
             'data' => $this->data,
@@ -182,14 +136,7 @@ class FcmMessage implements Message
             ...$this->custom,
         ]);
 
-        // si usamos el helper, lo metemos en android.notification
-        if (! empty($this->androidNotification)) {
-            $payload['android'] = $payload['android'] ?? [];
-            $payload['android']['notification'] = array_merge(
-                $payload['android']['notification'] ?? [],
-                $this->androidNotification
-            );
-        }
+
 
         return $payload;
     }
