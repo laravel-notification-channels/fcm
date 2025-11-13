@@ -55,7 +55,6 @@ class FcmChannel
             ->map(fn(MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
 
-
     /**
      * Handle the report for the notification and dispatch any failed notifications.
      */
