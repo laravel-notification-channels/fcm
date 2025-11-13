@@ -12,7 +12,10 @@ class FcmMessage implements Message
 {
     use Macroable;
 
-   
+
+    /**
+     * Create a new message instance.
+     */
     public function __construct(
         public ?string $name = null,
         public ?string $token = null,
@@ -22,15 +25,23 @@ class FcmMessage implements Message
         public array $custom = [],
         public ?Notification $notification = null,
         public ?Messaging $client = null,
-    ) { }
+    ) {
+        //
+    }
 
-    
+
+    /**
+     * Create a new message instance.
+     */
     public static function create(...$args): static
     {
         return new static(...$args);
     }
 
-   
+
+    /**
+     * Set the message name.
+     */
     public function name(?string $name): self
     {
         $this->name = $name;
@@ -46,6 +57,9 @@ class FcmMessage implements Message
         return $this;
     }
 
+    /**
+     * Set the message topic.s
+     */
     public function topic(?string $topic): self
     {
         $this->topic = $topic;
@@ -75,17 +89,18 @@ class FcmMessage implements Message
  
     public function custom(?array $custom = []): self
     {
-        $this->custom = $custom ?? [];
+        $this->custom = $custom;
 
         return $this;
     }
 
+
     /**
-     * Set android-specific custom options.
+     * Set "android" specific custom options.
      */
     public function android(array $options = []): self
     {
-        
+
         $this->custom([
             ...$this->custom,
             'android' => $options,
@@ -95,13 +110,16 @@ class FcmMessage implements Message
     }
 
 
+
     /**
+     * Set APNs-specific custom options for iOS.
      * Set APNs-specific custom options for iOS.
      */
     public function ios(array $options = []): self
     {
         $this->custom([
             ...$this->custom,
+            'apns' => $options,
             'apns' => $options,
         ]);
 
@@ -123,10 +141,10 @@ class FcmMessage implements Message
         return $this;
     }
 
+
     public function toArray()
     {
-
-        $payload = array_filter([
+        return array_filter([
             'name' => $this->name,
             'data' => $this->data,
             'token' => $this->token,
@@ -135,11 +153,8 @@ class FcmMessage implements Message
             'notification' => $this->notification?->toArray(),
             ...$this->custom,
         ]);
-
-
-
-        return $payload;
     }
+
 
     /**
      * @return mixed
