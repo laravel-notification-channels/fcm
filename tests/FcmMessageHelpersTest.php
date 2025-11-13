@@ -58,4 +58,21 @@ class FcmMessageHelpersTest extends TestCase
         $this->assertEquals(1, $payload['meta']['a']);
         $this->assertEquals('#000', $payload['android']['notification']['color']);
     }
+
+    /** @test */
+    public function it_can_append_a_topic_to_the_payload()
+    {
+        $message = FcmMessage::create()
+            ->topic('news')
+            ->notification(new \NotificationChannels\Fcm\Resources\Notification(
+                title: 'Test topic',
+                body: 'Topic message'
+            ));
+
+        $payload = $message->toArray();
+
+        $this->assertArrayHasKey('topic', $payload);
+        $this->assertEquals('news', $payload['topic']);
+        $this->assertEquals('Test topic', $payload['notification']['title']);
+    }
 }

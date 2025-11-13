@@ -98,6 +98,42 @@ class FcmChannelTest extends TestCase
     {
         return MessageTarget::with(MessageTarget::TOKEN, 'token');
     }
+
+    public function test_it_can_send_notifications_to_topic()
+    {
+        $events = Mockery::mock(Dispatcher::class);
+        $events->shouldNotReceive('dispatch');
+
+        $firebase = Mockery::mock(Messaging::class);
+        $firebase->shouldReceive('send')
+            ->with(Mockery::on(function ($message) {
+                return $message instanceof \NotificationChannels\Fcm\FcmMessage
+                    && $message->topic === 'news';
+            }))
+            ->andReturn(['message_id' => 'topic-message']);
+
+        $channel = new FcmChannel($events, $firebase);
+
+        $notifiable = new class {
+            use \Illuminate\Notifications\Notifiable;
+            public function routeNotificationForFcm($notification)
+            {
+                return [];
+            }
+        };
+
+        $notification = new class extends \Illuminate\Notifications\Notification {
+            public function toFcm($notifiable)
+            {
+                return \NotificationChannels\Fcm\FcmMessage::create()->topic('news');
+            }
+        };
+
+        $result = $channel->send($notifiable, $notification);
+
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
+        $this->assertEquals('topic-message', $result->first()['message_id']);
+    }
 }
 
 class DummyNotification extends Notification

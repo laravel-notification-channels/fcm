@@ -12,7 +12,7 @@ class FcmMessage implements Message
 {
     use Macroable;
 
-   
+    
     public function __construct(
         public ?string $name = null,
         public ?string $token = null,
@@ -22,15 +22,17 @@ class FcmMessage implements Message
         public array $custom = [],
         public ?Notification $notification = null,
         public ?Messaging $client = null,
-    ) { }
+    ) {}
 
-    
+
+  
+
     public static function create(...$args): static
     {
         return new static(...$args);
     }
 
-   
+
     public function name(?string $name): self
     {
         $this->name = $name;
@@ -38,7 +40,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    
+
     public function token(?string $token): self
     {
         $this->token = $token;
@@ -53,7 +55,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    
+
     public function condition(?string $condition): self
     {
         $this->condition = $condition;
@@ -72,7 +74,7 @@ class FcmMessage implements Message
         return $this;
     }
 
- 
+
     public function custom(?array $custom = []): self
     {
         $this->custom = $custom ?? [];
@@ -85,7 +87,7 @@ class FcmMessage implements Message
      */
     public function android(array $options = []): self
     {
-        
+
         $this->custom([
             ...$this->custom,
             'android' => $options,
@@ -108,7 +110,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-   
+
     public function notification(Notification $notification): self
     {
         $this->notification = $notification;
