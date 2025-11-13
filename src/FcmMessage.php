@@ -12,7 +12,6 @@ class FcmMessage implements Message
 {
     use Macroable;
 
-
     /**
      * Create a new message instance.
      */
@@ -29,7 +28,6 @@ class FcmMessage implements Message
         //
     }
 
-
     /**
      * Create a new message instance.
      */
@@ -37,7 +35,6 @@ class FcmMessage implements Message
     {
         return new static(...$args);
     }
-
 
     /**
      * Set the message name.
@@ -49,7 +46,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-    
+    /**
+     * Set the message token.
+     */
     public function token(?string $token): self
     {
         $this->token = $token;
@@ -58,7 +57,7 @@ class FcmMessage implements Message
     }
 
     /**
-     * Set the message topic.s
+     * Set the message topic.
      */
     public function topic(?string $topic): self
     {
@@ -67,7 +66,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-    
+    /**
+     * Set the message condition.
+     */
     public function condition(?string $condition): self
     {
         $this->condition = $condition;
@@ -75,6 +76,9 @@ class FcmMessage implements Message
         return $this;
     }
 
+    /**
+     * Set the message data.
+     */
     public function data(?array $data): self
     {
         if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
@@ -86,7 +90,9 @@ class FcmMessage implements Message
         return $this;
     }
 
- 
+    /**
+     * Set the message custom options.
+     */
     public function custom(?array $custom = []): self
     {
         $this->custom = $custom;
@@ -94,13 +100,11 @@ class FcmMessage implements Message
         return $this;
     }
 
-
     /**
-     * Set "android" specific custom options.
+     * Set Aandroid specific custom options.
      */
     public function android(array $options = []): self
     {
-
         $this->custom([
             ...$this->custom,
             'android' => $options,
@@ -109,11 +113,8 @@ class FcmMessage implements Message
         return $this;
     }
 
-
-
     /**
-     * Set APNs-specific custom options for iOS.
-     * Set APNs-specific custom options for iOS.
+     * Set APNs-specific custom options.
      */
     public function ios(array $options = []): self
     {
@@ -126,7 +127,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-   
+    /**
+     * Set the message notification.
+     */
     public function notification(Notification $notification): self
     {
         $this->notification = $notification;
@@ -134,6 +137,9 @@ class FcmMessage implements Message
         return $this;
     }
 
+    /**
+     * Set the client to use for the message.
+     */
     public function usingClient(Messaging $client): self
     {
         $this->client = $client;
@@ -141,7 +147,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-
+    /**
+     * Get the array represenation of the message.
+     */
     public function toArray()
     {
         return array_filter([
@@ -154,7 +162,6 @@ class FcmMessage implements Message
             ...$this->custom,
         ]);
     }
-
 
     /**
      * @return mixed

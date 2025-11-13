@@ -112,37 +112,36 @@ class FcmMessageTest extends TestCase
 
     public function test_appends_android_options_into_custom()
     {
-        $msg = FcmMessage::create()
-            ->notification(new Notification(title: 'T', body: 'B'))
-            ->android(['notification' => ['channel_id' => 'ops', 'sound' => 'default']]);
+        $message = FcmMessage::create()
+            ->notification(new Notification(title: 'title', body: 'body'))
+            ->android(['notification' => ['channel_id' => 'channel_id']]);
 
-        $payload = $msg->toArray();
+        $payload = $message->toArray();
 
         $this->assertArrayHasKey('android', $payload);
         $this->assertArrayHasKey('notification', $payload['android']);
-        $this->assertEquals('ops', $payload['android']['notification']['channel_id']);
-        $this->assertEquals('default', $payload['android']['notification']['sound']);
+        $this->assertEquals('channel_id', $payload['android']['notification']['channel_id']);
     }
 
     public function test_appends_ios_options_into_custom()
     {
-        $msg = FcmMessage::create()
-            ->ios(['payload' => ['aps' => ['sound' => 'default']]]);
+        $message = FcmMessage::create()
+            ->ios(['payload' => ['aps' => ['sound' => 'sound']]]);
 
-        $payload = $msg->toArray();
+        $payload = $message->toArray();
 
         $this->assertArrayHasKey('apns', $payload);
         $this->assertArrayHasKey('payload', $payload['apns']);
-        $this->assertEquals('default', $payload['apns']['payload']['aps']['sound']);
+        $this->assertEquals('sound', $payload['apns']['payload']['aps']['sound']);
     }
 
     public function test_preserves_existing_custom_keys_when_using_helpers()
     {
-        $msg = FcmMessage::create()
+        $message = FcmMessage::create()
             ->custom(['meta' => ['a' => 1]])
             ->android(['notification' => ['color' => '#000']]);
 
-        $payload = $msg->toArray();
+        $payload = $message->toArray();
 
         $this->assertArrayHasKey('meta', $payload);
         $this->assertEquals(1, $payload['meta']['a']);
