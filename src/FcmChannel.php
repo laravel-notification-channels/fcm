@@ -33,19 +33,31 @@ class FcmChannel
      */
     public function send(mixed $notifiable, Notification $notification): ?Collection
     {
+        /** @var \NotificationChannels\Fcm\FcmMessage */
+        $fcmMessage = $notification->toFcm($notifiable);
+
+        // If message has a topic defined, send directly
+        if (!empty($fcmMessage->topic)) {
+            $response = ($fcmMessage->client ?? $this->client)->send($fcmMessage);
+            return collect([$response]);
+        }
+
+        // Otherwise, fallback to standard token-based multicast
         $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
         if (empty($tokens)) {
             return null;
         }
 
-        $fcmMessage = $notification->toFcm($notifiable);
-
         return Collection::make($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
-            ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
+            ->map(fn($tokens) => ($fcmMessage->client ?? $this->client)
+                ->sendMulticast($fcmMessage, $tokens->all()))
+            ->map(fn(MulticastSendReport $report) =>
+            $this->checkReportForFailures($notifiable, $notification, $report));
     }
+
+
 
     /**
      * Handle the report for the notification and dispatch any failed notifications.
@@ -53,8 +65,8 @@ class FcmChannel
     protected function checkReportForFailures(mixed $notifiable, Notification $notification, MulticastSendReport $report): MulticastSendReport
     {
         Collection::make($report->getItems())
-            ->filter(fn (SendReport $report) => $report->isFailure())
-            ->each(fn (SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
+            ->filter(fn(SendReport $report) => $report->isFailure())
+            ->each(fn(SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
 
         return $report;
     }

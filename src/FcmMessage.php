@@ -12,9 +12,7 @@ class FcmMessage implements Message
 {
     use Macroable;
 
-    /**
-     * Create a new message instance.
-     */
+    
     public function __construct(
         public ?string $name = null,
         public ?string $token = null,
@@ -24,21 +22,17 @@ class FcmMessage implements Message
         public array $custom = [],
         public ?Notification $notification = null,
         public ?Messaging $client = null,
-    ) {
-        //
-    }
+    ) {}
 
-    /**
-     * Create a new message instance.
-     */
+
+  
+
     public static function create(...$args): static
     {
         return new static(...$args);
     }
 
-    /**
-     * Set the message name.
-     */
+
     public function name(?string $name): self
     {
         $this->name = $name;
@@ -46,9 +40,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message token.
-     */
+
     public function token(?string $token): self
     {
         $this->token = $token;
@@ -56,9 +48,6 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message topic.s
-     */
     public function topic(?string $topic): self
     {
         $this->topic = $topic;
@@ -66,9 +55,7 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message condition.
-     */
+
     public function condition(?string $condition): self
     {
         $this->condition = $condition;
@@ -76,12 +63,9 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message data, or throw exception if data is not an array of strings.
-     */
     public function data(?array $data): self
     {
-        if (! empty(array_filter($data, fn ($value) => ! is_string($value)))) {
+        if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
             throw new InvalidArgumentException('Data values must be strings.');
         }
 
@@ -90,19 +74,43 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set additional custom message data.
-     */
-    public function custom(?array $custom): self
+
+    public function custom(?array $custom = []): self
     {
-        $this->custom = $custom;
+        $this->custom = $custom ?? [];
 
         return $this;
     }
 
     /**
-     * Set the message notification.
+     * Set android-specific custom options.
      */
+    public function android(array $options = []): self
+    {
+
+        $this->custom([
+            ...$this->custom,
+            'android' => $options,
+        ]);
+
+        return $this;
+    }
+
+
+    /**
+     * Set APNs-specific custom options for iOS.
+     */
+    public function ios(array $options = []): self
+    {
+        $this->custom([
+            ...$this->custom,
+            'apns' => $options,
+        ]);
+
+        return $this;
+    }
+
+
     public function notification(Notification $notification): self
     {
         $this->notification = $notification;
@@ -110,9 +118,6 @@ class FcmMessage implements Message
         return $this;
     }
 
-    /**
-     * Set the message Firebase Messaging client instance.
-     */
     public function usingClient(Messaging $client): self
     {
         $this->client = $client;
@@ -122,7 +127,8 @@ class FcmMessage implements Message
 
     public function toArray()
     {
-        return array_filter([
+
+        $payload = array_filter([
             'name' => $this->name,
             'data' => $this->data,
             'token' => $this->token,
@@ -131,6 +137,10 @@ class FcmMessage implements Message
             'notification' => $this->notification?->toArray(),
             ...$this->custom,
         ]);
+
+
+
+        return $payload;
     }
 
     /**
