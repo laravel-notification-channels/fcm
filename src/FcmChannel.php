@@ -28,10 +28,10 @@ class FcmChannel
         //
     }
 
-    /**
+   /*  *
      * Send the given notification.
      */
-    public function send(mixed $notifiable, Notification $notification): ?Collection
+      public function send(mixed $notifiable, Notification $notification): ?Collection
     {
         $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
@@ -47,14 +47,16 @@ class FcmChannel
             ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
 
+
+
     /**
      * Handle the report for the notification and dispatch any failed notifications.
      */
     protected function checkReportForFailures(mixed $notifiable, Notification $notification, MulticastSendReport $report): MulticastSendReport
     {
         Collection::make($report->getItems())
-            ->filter(fn (SendReport $report) => $report->isFailure())
-            ->each(fn (SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
+            ->filter(fn(SendReport $report) => $report->isFailure())
+            ->each(fn(SendReport $report) => $this->dispatchFailedNotification($notifiable, $notification, $report));
 
         return $report;
     }
