@@ -28,32 +28,26 @@ class FcmChannel
         //
     }
 
-    /**
+   /*  *
      * Send the given notification.
      */
-    public function send(mixed $notifiable, Notification $notification): ?Collection
+      public function send(mixed $notifiable, Notification $notification): ?Collection
     {
-        /** @var \NotificationChannels\Fcm\FcmMessage $fcmMessage */
-        $fcmMessage = $notification->toFcm($notifiable);
-
-        // Send directly when a topic is defined (no registration tokens required)
-        if (!is_null($fcmMessage->topic)) {
-            return collect(($fcmMessage->client ?? $this->client)->send($fcmMessage));
-        }
-
-
         $tokens = Arr::wrap($notifiable->routeNotificationFor('fcm', $notification));
 
         if (empty($tokens)) {
             return null;
         }
 
+        $fcmMessage = $notification->toFcm($notifiable);
 
         return Collection::make($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
-            ->map(fn(MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
+            ->map(fn ($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
+            ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
+
+
 
     /**
      * Handle the report for the notification and dispatch any failed notifications.
