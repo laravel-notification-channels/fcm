@@ -12,16 +12,16 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "guzzlehttp/guzzle": "^7.0",
-        "illuminate/notifications": "^11.0|^12.0",
-        "illuminate/support": "^11.0|^12.0",
+        "illuminate/notifications": "^12.0",
+        "illuminate/support": "^12.0",
         "kreait/laravel-firebase": "^6.0"
     },
     "require-dev": {
         "laravel/pint": "^1.25",
         "mockery/mockery": "^1.6.0",
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^12.0"
     },
     "autoload": {
         "psr-4": {
