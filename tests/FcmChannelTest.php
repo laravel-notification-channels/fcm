@@ -18,12 +18,12 @@ use PHPUnit\Framework\TestCase;
 
 class FcmChannelTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         Mockery::close();
     }
 
-    public function test_it_can_be_instantiated()
+    public function test_it_can_be_instantiated(): void
     {
         $events = Mockery::mock(Dispatcher::class);
         $firebase = Mockery::mock(Messaging::class);
@@ -33,7 +33,7 @@ class FcmChannelTest extends TestCase
         $this->assertInstanceOf(FcmChannel::class, $channel);
     }
 
-    public function test_it_can_send_notifications()
+    public function test_it_can_send_notifications(): void
     {
         $events = Mockery::mock(Dispatcher::class);
         $events->shouldNotReceive('dispatch');
@@ -53,7 +53,7 @@ class FcmChannelTest extends TestCase
         $this->assertInstanceOf(MulticastSendReport::class, $result->first());
     }
 
-    public function test_it_can_send_notifications_with_custom_client()
+    public function test_it_can_send_notifications_with_custom_client(): void
     {
         $events = Mockery::mock(Dispatcher::class);
         $events->shouldNotReceive('dispatch');
@@ -75,7 +75,7 @@ class FcmChannelTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    public function test_it_can_dispatch_events()
+    public function test_it_can_dispatch_events(): void
     {
         $events = Mockery::mock(Dispatcher::class);
         $events->shouldReceive('dispatch')->once();

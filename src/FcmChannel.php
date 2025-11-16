@@ -14,11 +14,9 @@ use Kreait\Firebase\Messaging\SendReport;
 class FcmChannel
 {
     /**
-     * The maximum number of tokens we can use in a single request
-     *
-     * @var int
+     * The maximum number of tokens we can use in a single request.
      */
-    const TOKENS_PER_REQUEST = 500;
+    const int TOKENS_PER_REQUEST = 500;
 
     /**
      * Create a new channel instance.
@@ -39,11 +37,13 @@ class FcmChannel
             return null;
         }
 
-        $fcmMessage = $notification->toFcm($notifiable);
+        $message = $notification->toFcm($notifiable);
+
+        $client = $message->client ?? $this->client;
 
         return Collection::make($tokens)
             ->chunk(self::TOKENS_PER_REQUEST)
-            ->map(fn ($tokens) => ($fcmMessage->client ?? $this->client)->sendMulticast($fcmMessage, $tokens->all()))
+            ->map(fn ($tokens) => $client->sendMulticast($message, $tokens->all()))
             ->map(fn (MulticastSendReport $report) => $this->checkReportForFailures($notifiable, $notification, $report));
     }
 
