@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class FcmMessageTest extends TestCase
 {
-    public function test_it_can_be_instantiated()
+    public function test_it_can_be_instantiated(): void
     {
         $message = new FcmMessage(name: 'name');
 
@@ -19,7 +19,7 @@ class FcmMessageTest extends TestCase
         $this->assertEquals('name', $message->name);
     }
 
-    public function test_it_can_be_created()
+    public function test_it_can_be_created(): void
     {
         $message = FcmMessage::create(name: 'name');
 
@@ -28,49 +28,49 @@ class FcmMessageTest extends TestCase
         $this->assertEquals('name', $message->name);
     }
 
-    public function test_it_can_set_name()
+    public function test_it_can_set_name(): void
     {
         $message = FcmMessage::create()->name('name');
 
         $this->assertEquals(['name' => 'name'], $message->toArray());
     }
 
-    public function test_it_can_set_token()
+    public function test_it_can_set_token(): void
     {
         $message = FcmMessage::create()->token('token');
 
         $this->assertEquals(['token' => 'token'], $message->toArray());
     }
 
-    public function test_it_can_set_topic()
+    public function test_it_can_set_topic(): void
     {
         $message = FcmMessage::create()->topic('topic');
 
         $this->assertEquals(['topic' => 'topic'], $message->toArray());
     }
 
-    public function test_it_can_set_condition()
+    public function test_it_can_set_condition(): void
     {
         $message = FcmMessage::create()->condition('condition');
 
         $this->assertEquals(['condition' => 'condition'], $message->toArray());
     }
 
-    public function test_it_can_set_data()
+    public function test_it_can_set_data(): void
     {
         $message = FcmMessage::create()->data(['a' => 'b']);
 
         $this->assertEquals(['data' => ['a' => 'b']], $message->toArray());
     }
 
-    public function test_it_throws_exception_on_invalid_data()
+    public function test_it_throws_exception_on_invalid_data(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         FcmMessage::create()->data(['a' => 1]);
     }
 
-    public function test_it_can_set_custom_attributes()
+    public function test_it_can_set_custom_attributes(): void
     {
         $message = FcmMessage::create()
             ->name('name')
@@ -90,7 +90,7 @@ class FcmMessageTest extends TestCase
         $this->assertEquals($expected, $message->toArray());
     }
 
-    public function test_it_can_set_notification()
+    public function test_it_can_set_notification(): void
     {
         $notification = Notification::create()->title('title');
 
@@ -101,7 +101,7 @@ class FcmMessageTest extends TestCase
         ], $message->toArray());
     }
 
-    public function test_it_can_set_client()
+    public function test_it_can_set_client(): void
     {
         $client = Mockery::mock(Messaging::class);
 
@@ -110,7 +110,7 @@ class FcmMessageTest extends TestCase
         $this->assertSame($client, $message->client);
     }
 
-    public function test_appends_android_options_into_custom()
+    public function test_appends_android_options_into_custom(): void
     {
         $message = FcmMessage::create()
             ->notification(new Notification(title: 'title', body: 'body'))
@@ -123,7 +123,7 @@ class FcmMessageTest extends TestCase
         $this->assertEquals('channel_id', $payload['android']['notification']['channel_id']);
     }
 
-    public function test_appends_ios_options_into_custom()
+    public function test_appends_ios_options_into_custom(): void
     {
         $message = FcmMessage::create()
             ->ios(['payload' => ['aps' => ['sound' => 'sound']]]);
@@ -135,7 +135,7 @@ class FcmMessageTest extends TestCase
         $this->assertEquals('sound', $payload['apns']['payload']['aps']['sound']);
     }
 
-    public function test_preserves_existing_custom_keys_when_using_helpers()
+    public function test_preserves_existing_custom_keys_when_using_helpers(): void
     {
         $message = FcmMessage::create()
             ->custom(['meta' => ['a' => 1]])

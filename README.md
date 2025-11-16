@@ -14,6 +14,7 @@ This package makes it easy to send notifications using [Firebase Cloud Messaging
 	- [Setting up the FCM service](#setting-up-the-fcm-service)
 - [Usage](#usage)
 	- [Available message methods](#available-message-methods)
+	- [Topic notifications](#topic-notifications)
     - [Custom clients](#custom-clients)
     - [Handling errors](#handling-errors)
 - [Changelog](#changelog)
@@ -154,6 +155,17 @@ FcmMessage::create()
     ->condition('condition')
     ->data(['a' => 'b'])
     ->custom(['notification' => []]);
+```
+
+## Topic notifications
+
+You can also send FCM notifications to topics with the `FcmTopicChannel`. Use an on-demand notification to to route the notification to the topic, or you can set the topic on the message itself in the `toFcm` method.
+
+```php
+use NotificationChannels\Fcm\FcmTopicChannel;
+
+Notification::route(FcmTopicChannel::class, 'news')
+    ->notify(new BlogCreated($blog));
 ```
 
 ## Custom clients

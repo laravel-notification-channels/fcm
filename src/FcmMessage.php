@@ -21,7 +21,7 @@ class FcmMessage implements Message
         public ?string $topic = null,
         public ?string $condition = null,
         public ?array $data = [],
-        public array $custom = [],
+        public ?array $custom = [],
         public ?Notification $notification = null,
         public ?Messaging $client = null,
     ) {
@@ -81,7 +81,7 @@ class FcmMessage implements Message
      */
     public function data(?array $data): self
     {
-        if (! empty(array_filter($data, fn($value) => ! is_string($value)))) {
+        if (! empty(array_filter($data, fn ($value) => ! is_string($value)))) {
             throw new InvalidArgumentException('Data values must be strings.');
         }
 
@@ -103,12 +103,9 @@ class FcmMessage implements Message
     /**
      * Set Aandroid specific custom options.
      */
-    public function android(array $options = []): self
+    public function android(?array $options = []): self
     {
-        $this->custom([
-            ...$this->custom,
-            'android' => $options,
-        ]);
+        $this->custom([...$this->custom, 'android' => $options]);
 
         return $this;
     }
@@ -116,13 +113,9 @@ class FcmMessage implements Message
     /**
      * Set APNs-specific custom options.
      */
-    public function ios(array $options = []): self
+    public function ios(?array $options = []): self
     {
-        $this->custom([
-            ...$this->custom,
-            'apns' => $options,
-            'apns' => $options,
-        ]);
+        $this->custom([...$this->custom, 'apns' => $options]);
 
         return $this;
     }
@@ -150,7 +143,7 @@ class FcmMessage implements Message
     /**
      * Get the array represenation of the message.
      */
-    public function toArray()
+    public function toArray(): array
     {
         return array_filter([
             'name' => $this->name,
