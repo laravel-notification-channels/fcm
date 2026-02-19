@@ -2,12 +2,12 @@
 
 namespace NotificationChannels\Fcm\Test;
 
-use Exception;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Collection;
 use Kreait\Firebase\Contract\Messaging;
+use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Firebase\Messaging\SendReport;
@@ -84,7 +84,7 @@ class FcmChannelTest extends TestCase
         $firebase->shouldReceive('sendMulticast')
             ->with(Mockery::any(), ['token'])
             ->andReturn(MulticastSendReport::withItems([
-                SendReport::failure($this->target(), new Exception),
+                SendReport::failure($this->target(), $this->createStub(MessagingException::class)),
             ]));
 
         $channel = new FcmChannel($events, $firebase);
