@@ -14,8 +14,8 @@
     "require": {
         "php": "^8.3",
         "guzzlehttp/guzzle": "^7.0",
-        "illuminate/notifications": "^12.0",
-        "illuminate/support": "^12.0",
+        "illuminate/notifications": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
         "kreait/laravel-firebase": "^6.0 || ^7.0"
     },
     "require-dev": {
