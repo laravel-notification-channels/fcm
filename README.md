@@ -159,12 +159,10 @@ FcmMessage::create()
 
 ## Topic notifications
 
-You can also send FCM notifications to topics with the `FcmTopicChannel`. Use an on-demand notification to to route the notification to the topic, or you can set the topic on the message itself in the `toFcm` method.
+You can also send FCM notifications to topics with the `FcmTopicChannel`. Use an on-demand notification to route the notification to the topic, or you can set the topic on the message itself in the `toFcm` method.
 
 ```php
-use NotificationChannels\Fcm\FcmTopicChannel;
-
-Notification::route(FcmTopicChannel::class, 'news')
+Notification::route('fcm-topic', 'news')
     ->notify(new BlogCreated($blog));
 ```
 
